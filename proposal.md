@@ -1,4 +1,5 @@
 # Machine Learning Engineer Nanodegree
+
 ## Capstone Proposal
 Louis Wan  
 13th Jan, 2018
@@ -10,21 +11,33 @@ Louis Wan
 Financial market is dynamic and full of uncertainty. Lots of financial industry like hedge funds have to works well with data, like time series data like the price of stocks and futures and multidimension data like fundamental factors of a company. Investment bank hire many financial expert to building strategies for trading but people works emotionally. Algorithmic trading can help expert to do judgement but the signals and indicators are all defined by human. Algo-trading just provides a systematic way to trade according to a human logic. Can we build a reinforcement agent that can recognize signal by itself? This is the propose of this project.
 
 ### Problem Statement
-_(approx. 1 paragraph)_
 
-'''
-In this section, clearly describe the problem that is to be solved. The problem described should be well defined and should have at least one relevant potential solution. Additionally, describe the problem thoroughly such that it is clear that the problem is quantifiable (the problem can be expressed in mathematical or logical terms) , measurable (the problem can be measured by some metric and clearly observed), and replicable (the problem can be reproduced and occurs more than once).
-'''
-
-Generate a set of technical and statistical indicators feeds to a machine learning based trading agent. Try to reach 
-
+Over hundreds of technical and statistical indicators are used for machine learning based trading agent. After training, the agent can turn the indicators into trading decisions(buy or sell with different amount)
 
 ### Datasets and Inputs
-_(approx. 2-3 paragraphs)_
 
-'''
-In this section, the dataset(s) and/or input(s) being considered for the project should be thoroughly described, such as how they relate to the problem and why they should be used. Information such as how the dataset or input is (was) obtained, and the characteristics of the dataset or input, should be included with relevant references and citations as necessary It should be clear how the dataset(s) or input(s) will be used in the project and whether their use is appropriate given the context of the problem.
-'''
+The project will use Sun Life Rainbow mandatory provident fund(MPF) Scheme for finanical trading products. The reason why using Sun Life MPF is because of these funds include different kind of global instrutment such as bonds, stocks and foreign exchanges. Less noise have to tackle with. Secondly, Sun Life MPF service charge is counted and reflected inside the product itself with little entry barrier. Usually, the bond trading is requiring 1.5M cash in security account which is not feasible for majority of people. The twelve funds are provided by Sun Life MPF.
+
+Sun Life Rainbow MPF Scheme 
+
+#### included for trading
+1. Sun Life MPF Conservative Fund (Class B), Launch Date: 01 Dec 2000
+2. Sun Life MPF Hong Kong Dollar Bond Fund (Class B), Launch Date: 01 Dec 2000
+3. Sun Life MPF Stable Fund (Class B), Launch Date: 01 Dec 2000
+4. Sun Life MPF Balanced Fund (Class B), Launch Date: 01 Dec 2000
+5. Sun Life MPF Growth Fund (Class B), Launch Date: 01 Dec 2000
+6. Sun Life MPF Global Equity Fund (Class B), Launch Date: 01 Mar 2008
+7. Sun Life MPF Asian Equity Fund (Class B), Launch Date: 01 Mar 2008
+8. Sun Life MPF Hong Kong Equity Fund (Class B), Launch Date: 01 Dec 2000
+9. Sun Life MPF Greater China Equity Fund (Class B), Launch Date: 01 Mar 2008
+
+#### excluded from trading
+10. Sun Life MPF Global Bond Fund (Class B), Launch Date: 01 Jan 2010
+11. Sun Life MPF RMB and HKD Fund (Class B), Launch Date: 30 Jun 2012
+12. Sun Life FTSE MPF Hong Kong Index Fund (Class B), Launch Date: 10 Dec 2013
+
+Fund number 1 to 9 will be used for trading only due to the length of data of fund 10 to 12 is not enough.
+
 
 ### Solution Statement
 _(approx. 1 paragraph)_
