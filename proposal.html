@@ -1,0 +1,116 @@
+
+    <html lang="zh-cn">
+    <head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type" />
+    <link href="default.css" rel="stylesheet">
+    <link href="github-markdown.css" rel="stylesheet">
+    </head>
+    <body>
+    <h1 id="machine-learning-engineer-nanodegree">Machine Learning Engineer Nanodegree</h1>
+<h2 id="capstone-proposal">Capstone Proposal</h2>
+<p>Louis Wan<br />
+13th Jan, 2018</p>
+<h2 id="proposal">Proposal</h2>
+<h3 id="domain-background">Domain Background</h3>
+<p>Financial market is dynamic and full of uncertainty. Lots of financial industry like hedge funds have to works well with data, like time series data like the price of stocks and futures and multidimension data like fundamental factors of a company. Investment bank hire many financial expert to building strategies for trading but people works emotionally. Algorithmic trading can help expert to do judgement but the signals and indicators are all defined by human. Algo-trading just provides a systematic way to trade according to a human logic. Can we build a reinforcement agent that can recognize signal by itself? This is the propose of this project.</p>
+<h3 id="problem-statement">Problem Statement</h3>
+<p>Over hundreds of technical and statistical indicators are used for machine learning based trading agent. After training, the agent can turn the indicators into trading decisions(buy or sell with different amount)</p>
+<h3 id="datasets-and-inputs">Datasets and Inputs</h3>
+<p>The project will use Sun Life Rainbow mandatory provident fund(MPF) Scheme for finanical trading products. The reason why using Sun Life MPF is because of these funds include different kind of global instrutment such as bonds, stocks and foreign exchanges. Less noise have to tackle with. Secondly, Sun Life MPF service charge is counted and reflected inside the product itself with little entry barrier. Usually, the bond trading is requiring 1.5M cash in security account which is not feasible for majority of people. The twelve funds are provided by Sun Life MPF.</p>
+<p>Sun Life Rainbow MPF Scheme </p>
+<h4 id="included-for-trading">Included for trading</h4>
+<ol>
+<li>Sun Life MPF Conservative Fund (Class B), Launch Date: 01 Dec 2000</li>
+<li>Sun Life MPF Hong Kong Dollar Bond Fund (Class B), Launch Date: 01 Dec 2000</li>
+<li>Sun Life MPF Stable Fund (Class B), Launch Date: 01 Dec 2000</li>
+<li>Sun Life MPF Balanced Fund (Class B), Launch Date: 01 Dec 2000</li>
+<li>Sun Life MPF Growth Fund (Class B), Launch Date: 01 Dec 2000</li>
+<li>Sun Life MPF Hong Kong Equity Fund (Class B), Launch Date: 01 Dec 2000</li>
+</ol>
+<h4 id="excluded-from-trading">Excluded from trading</h4>
+<ol>
+<li>Sun Life MPF Global Equity Fund (Class B), Launch Date: 01 Mar 2008</li>
+<li>Sun Life MPF Asian Equity Fund (Class B), Launch Date: 01 Mar 2008</li>
+<li>Sun Life MPF Greater China Equity Fund (Class B), Launch Date: 01 Mar 2008</li>
+<li>Sun Life MPF Global Bond Fund (Class B), Launch Date: 01 Jan 2010</li>
+<li>Sun Life MPF RMB and HKD Fund (Class B), Launch Date: 30 Jun 2012</li>
+<li>Sun Life FTSE MPF Hong Kong Index Fund (Class B), Launch Date: 10 Dec 2013</li>
+</ol>
+<p>Fund number 1 to 6 will be used for trading only due to the length of data of fund No. 7 to 12 is not enough. For technical indicators, I will use the python package named TA-lib for generating indicators. Since the only close price of fund can be used, some of the indicators will not be available for use. I will use data from 01 Dec 2000 to 31 Dec 2017, total 6240 days. The data will be split into training and testing data in proportion 80/20. </p>
+<p>The training data is 4992 days(from 01 Dec 2000 to 02 Aug 2014) and the testing data is 1428 days(from 02 Aug 2014 to 31 Dec 2017). The financial data available in the world (index of major market, fx rate, interest rate) will also included in the dataset.</p>
+<h3 id="solution-statement">Solution Statement</h3>
+<p><img alt="alt text" src="md_figure/fig_1.png" title="Figure 1" /></p>
+<p>As shown the graph above, the propose of the learning agent is to transform the finanical product price, insturtment price and their technical indicators into trading decisions but the what kind of machine learning algorithm to be used is still to be discussed. But we can define it as a classification and optimization problem. The following algorithm are suggested to use.</p>
+<h4 id="supervised-learning-algorithm">Supervised Learning Algorithm:</h4>
+<ol>
+<li>Logistic Regression</li>
+<li>Multiple Layer Perceptron</li>
+<li>Long-Short Term Memory</li>
+<li>XGBoost</li>
+</ol>
+<h4 id="unsupervised-learning-algorithm">Unsupervised Learning Algorithm:</h4>
+<ol>
+<li>Principle Component Analysis (Dimensionality Reduction)</li>
+<li>Clustering Algorithm</li>
+</ol>
+<h4 id="reinforcement-learning-algorithm">Reinforcement Learning Algorithm:</h4>
+<ol>
+<li>Q-Learning</li>
+</ol>
+<h3 id="benchmark-model-and-evaluation-metrics">Benchmark Model and Evaluation Metrics</h3>
+<p>We will use the CAR/MDD for asssessing trend-trading algoritm. The higher the CAR/MDD mean the higher ratio of compound annual return(reward) to maximum drawdown(risk). The definition is stated below. You can find in the script 'car_mdd.py'</p>
+<div class="codehilite"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+
+
+<span class="k">def</span> <span class="nf">car</span><span class="p">(</span><span class="n">_date</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">_date</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;</span><span class="si">%d</span><span class="s1">/%m/%Y&#39;</span><span class="p">)</span>
+    <span class="n">end</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">_date</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;</span><span class="si">%d</span><span class="s1">/%m/%Y&#39;</span><span class="p">)</span>
+    <span class="n">delta</span> <span class="o">=</span> <span class="n">end</span> <span class="o">-</span> <span class="n">start</span>
+    <span class="n">delta_days</span> <span class="o">=</span> <span class="n">delta</span><span class="o">.</span><span class="n">days</span>
+    <span class="n">delta_years</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">delta_days</span><span class="p">)</span> <span class="o">/</span> <span class="mi">365</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">delta_years</span><span class="p">)</span>
+    <span class="n">return_rate</span> <span class="o">=</span> <span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">X</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">/</span><span class="n">X</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">return_rate</span><span class="p">,</span> <span class="mf">1.0</span><span class="o">/</span><span class="n">delta_years</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+
+
+<span class="k">def</span> <span class="nf">max_drawdown</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
+    <span class="n">mdd</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">peak</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">X</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="n">peak</span><span class="p">:</span> 
+            <span class="n">peak</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="n">dd</span> <span class="o">=</span> <span class="p">(</span><span class="n">peak</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span> <span class="o">/</span> <span class="n">peak</span>
+        <span class="k">if</span> <span class="n">dd</span> <span class="o">&gt;</span> <span class="n">mdd</span><span class="p">:</span>
+            <span class="n">mdd</span> <span class="o">=</span> <span class="n">dd</span>
+    <span class="k">return</span> <span class="n">mdd</span> 
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">file_name</span> <span class="o">=</span> <span class="s1">&#39;dataset/HK_Equity_Fund_B_testing.csv&#39;</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span>
+    <span class="n">date_list</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">Date</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+    <span class="n">price_list</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">Price</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+    <span class="n">_car</span> <span class="o">=</span> <span class="n">car</span><span class="p">(</span><span class="n">date_list</span><span class="p">,</span> <span class="n">price_list</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span>
+    <span class="n">_mdd</span> <span class="o">=</span> <span class="n">max_drawdown</span><span class="p">(</span><span class="n">price_list</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span>
+    <span class="k">print</span><span class="p">(</span><span class="s1">&#39;Compound Annuel Return = </span><span class="si">%.4f</span><span class="s1"> percent&#39;</span> <span class="o">%</span> <span class="n">_car</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s1">&#39;Maximum DrawDown = </span><span class="si">%.4f</span><span class="s1"> percent&#39;</span> <span class="o">%</span> <span class="n">_mdd</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s1">&#39;CAR/MDD = </span><span class="si">%.4f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">_car</span><span class="o">/</span><span class="n">_mdd</span><span class="p">))</span>
+</pre></div>
+
+
+<p>The fund with best performance is Sun Life MPF Hong Kong Equity Fund (Class B) in the testing period
+The compound annuel return is 9.4378 percent and the maximum drawdown of the fund is 28.0587 percent. So, the CAR/MDD is 0.3364. If the learning agent have both high CAR/MDD and the CAR, thats means the learning agent is better than the benchmark.</p>
+<h3 id="project-design">Project Design</h3>
+<p>Step 1: data collection and cleaning
+Step 2: data pre-processing (PCA, transform)
+Step 3: implementation of trading software
+Step 4: implementation of machine learning models
+Step 5: implementation of evaluation metrics
+Step 6: implementation of optimization algorithm and cross validation method
+Step 7: try different model and feature engineering
+Step 8: conclusion</p>
+    </body>
+    </html>
+    

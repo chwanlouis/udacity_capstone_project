@@ -41,9 +41,8 @@ Fund number 1 to 6 will be used for trading only due to the length of data of fu
 The training data is 4992 days(from 01 Dec 2000 to 02 Aug 2014) and the testing data is 1428 days(from 02 Aug 2014 to 31 Dec 2017). The financial data available in the world (index of major market, fx rate, interest rate) will also included in the dataset.
 
 ### Solution Statement
-_(approx. 1 paragraph)_
 
-![alt text](https://github.com/chwanlouis/udacity_capstone_project/blob/master/md_figure/fig_1.png "Figure 1")
+![alt text](md_figure/fig_1.png "Figure 1")
 
 As shown the graph above, the propose of the learning agent is to transform the finanical product price, insturtment price and their technical indicators into trading decisions but the what kind of machine learning algorithm to be used is still to be discussed. But we can define it as a classification and optimization problem. The following algorithm are suggested to use.
 
@@ -61,7 +60,6 @@ As shown the graph above, the propose of the learning agent is to transform the 
 7. Q-Learning
 
 ### Benchmark Model and Evaluation Metrics
-_(approximately 1-2 paragraphs)_
 
 We will use the CAR/MDD for asssessing trend-trading algoritm. The higher the CAR/MDD mean the higher ratio of compound annual return(reward) to maximum drawdown(risk). The definition is stated below. You can find in the script 'car_mdd.py'
 
@@ -110,7 +108,6 @@ The fund with best performance is Sun Life MPF Hong Kong Equity Fund (Class B) i
 The compound annuel return is 9.4378 percent and the maximum drawdown of the fund is 28.0587 percent. So, the CAR/MDD is 0.3364. If the learning agent have both high CAR/MDD and the CAR, thats means the learning agent is better than the benchmark.
 
 ### Project Design
-_(approx. 1 page)_
 
 Step 1: data collection and cleaning
 Step 2: data pre-processing (PCA, transform)
