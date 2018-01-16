@@ -25,7 +25,7 @@ def md2html(mdstr):
 
 
 if __name__ == '__main__':
-    infile_name = 'README.md'
+    infile_name = 'proposal.md'
     html_name = 'proposal.html'
     pdf_name = 'proposal.pdf'
     infile = open(infile_name, 'r')
