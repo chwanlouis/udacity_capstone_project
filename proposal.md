@@ -72,7 +72,7 @@ import pandas as pd
 from datetime import datetime
 
 
-def    car(_date, X):
+def car(_date, X):
     start = datetime.strptime(_date[0], '%d/%m/%Y')
     end = datetime.strptime(_date[-1], '%d/%m/%Y')
     delta = end - start
