@@ -71,6 +71,51 @@ class SunLifeFundInfo(object):
             self.souping_csv(fund)
 
 
+class InvestingDotComDataHandler(object):
+    def __init__(self, file_name_list):
+        self.file_name_list = file_name_list
+
+    @staticmethod
+    def datetime_rename(dt):
+        if '-' in dt:
+            return dt
+        month, day, year = dt.replace(',', '').split(' ')
+        month_dict = {
+            'Jan': '01',
+            'Feb': '02',
+            'Mar': '03',
+            'Apr': '04',
+            'May': '05',
+            'Jun': '06',
+            'Jul': '07',
+            'Aug': '08',
+            'Sep': '09',
+            'Oct': '10',
+            'Nov': '11',
+            'Dec': '12'
+        }
+        month = month_dict[month]
+        return '%s-%s-%s' % (year, month, day)
+
+    def cleaner(self, file_name):
+        df = pd.read_csv(file_name)
+        df['Date'] = [self.datetime_rename(dt) for dt in df['Date']]
+        order = ['Date', 'Open', 'High', 'Low', 'Price']
+        df = df[order]
+        df.to_csv(file_name, index=False)
+
+    def run(self):
+        for fname in self.file_name_list:
+            self.cleaner(fname)
+
 if __name__ == '__main__':
-    sunlife_crawler = SunLifeFundInfo()
-    sunlife_crawler.run()
+    # sunlife_crawler = SunLifeFundInfo()
+    # sunlife_crawler.run()
+    investing_data_fname_list = [
+        'dataset/HSI_investing_com.csv',
+        'dataset/IXIC_investing_com.csv',
+        'dataset/us2yrbondyield_investing_com.csv',
+        'dataset/us10yrbondyield_investing_com.csv'
+    ]
+    investing_data_handler = InvestingDotComDataHandler(investing_data_fname_list)
+    investing_data_handler.run()
