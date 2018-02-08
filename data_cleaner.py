@@ -119,3 +119,4 @@ if __name__ == '__main__':
     ]
     investing_data_handler = InvestingDotComDataHandler(investing_data_fname_list)
     investing_data_handler.run()
+

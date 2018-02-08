@@ -1,4 +1,5 @@
 import pandas as pd
+from datetime import datetime
 
 
 class DataMerger(object):
@@ -16,13 +17,17 @@ class DataMerger(object):
 
     def run(self):
         merged = None
+        start_date = datetime.strptime('2002-01-09', '%Y-%m-%d')
+        end_date = datetime.strptime('2017-12-31', '%Y-%m-%d')
         for file_name in self.file_name_list:
             df = self.reader(file_name)
             if merged is None:
                 merged = df
             else:
                 merged = merged.merge(df, how='left', left_index=True, right_index=True)
-        print(merged.dropna())
+        merged = merged.sort_index()[start_date:end_date]
+        merged = merged.interpolate(method='linear')
+        return merged
 
 
 if __name__ == '__main__':
@@ -39,4 +44,4 @@ if __name__ == '__main__':
         'dataset/us10yrbondyield_investing_com.csv'
     ]
     data_merger = DataMerger(data_fname_list)
-    data_merger.run()
+    merged_df = data_merger.run()
