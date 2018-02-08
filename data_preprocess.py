@@ -15,7 +15,7 @@ class DataMerger(object):
         df.columns = ['%s_%s' % (header_prefex, colname)for colname in df.columns.values.tolist()]
         return df
 
-    def run(self):
+    def run(self, save_csv=True):
         merged = None
         start_date = datetime.strptime('2002-01-09', '%Y-%m-%d')
         end_date = datetime.strptime('2017-12-31', '%Y-%m-%d')
@@ -25,8 +25,9 @@ class DataMerger(object):
                 merged = df
             else:
                 merged = merged.merge(df, how='left', left_index=True, right_index=True)
-        merged = merged.sort_index()[start_date:end_date]
-        merged = merged.interpolate(method='linear')
+        merged = merged.sort_index()[start_date:end_date].interpolate(method='linear').round(decimals=4)
+        if save_csv:
+            merged.to_csv('dataset/processed_data.csv')
         return merged
 
 
