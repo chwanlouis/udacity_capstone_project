@@ -45,4 +45,6 @@ if __name__ == '__main__':
         'dataset/us10yrbondyield_investing_com.csv'
     ]
     data_merger = DataMerger(data_fname_list)
-    merged_df = data_merger.run()
+    merged_df = data_merger.run(
+        save_csv=True
+    )
