@@ -12,7 +12,7 @@ class DataMerger(object):
         df = pd.read_csv(file_name)
         df['Date'] = pd.to_datetime(df['Date'], format='%Y-%m-%d')
         df = df.set_index('Date')
-        df.columns = ['%s_%s' % (header_prefex, colname)for colname in df.columns.values.tolist()]
+        df.columns = ['%s_%s' % (header_prefex, colname) for colname in df.columns.values.tolist()]
         return df
 
     def run(self, save_csv=True):
