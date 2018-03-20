@@ -6,8 +6,8 @@ from sklearn.neural_network import MLPClassifier
 
 class MultipleLayerPerceptronClassifier(object):
     def __init__(self, features_name):
-        self.model_name = 'logistic_regression_classifier'
-        self.model_file_path = 'model/logistic_regression_classifier.pickle'
+        self.model_name = 'mlp_classifier'
+        self.model_file_path = 'model/mlp_classifier.pickle'
         self.features_name = features_name
         self.fund_list = [
             'balanced_fund_data_Price',
@@ -64,6 +64,7 @@ class MultipleLayerPerceptronClassifier(object):
         if self.model is None:
             print('Model is not build')
             return
+        # df = pd.DataFrame(data)[self.features_name].values
         return self.model.predict_proba(data)
 
 
@@ -93,8 +94,5 @@ if __name__ == '__main__':
         req_return=0.005
     )
     prob = model_builder.get_probability(test_data)
-    existed_prob_row = list()
     for prob_row in prob:
-        if prob_row not in existed_prob_row:
-            print(prob_row)
-            existed_prob_row.append(prob_row)
+        print(prob_row)

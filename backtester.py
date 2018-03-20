@@ -26,28 +26,47 @@ class DataFeeder(object):
 
 
 class StrategyBacktesting(object):
-    def __init__(self, feeder, capital, classifier_type, selected_features):
+    def __init__(self, feeder, capital, classifier_type, selected_features, is_benchmark=True):
         self.feeder = feeder
         self.capital = capital
         self.training_bars = 300
-        self.n_bars_after_retrain = 100
+        self.n_bars_after_retrain = 20
         self.historical_data = list()
         self.classifier_type = classifier_type
-        self.selected_features = selected_features
+        self.selected_features = [feature.replace('\n', '') for feature in selected_features]
         self.total_bar_count = 0
         self.prediction = None
+        self.position = {
+            'balanced_fund': 0,
+            'conservative_fund': 0,
+            'growth_fund': 0,
+            'hk_equity_fund': 0,
+            'hkdollar_bond_fund': 0,
+            'stable_fund': 0
+        }
+        self.is_benchmark = is_benchmark
+
+    @staticmethod
+    def probability_transform(prob_array):
+        base_sum = sum(prob_array)
+        return [prob/base_sum for prob in prob_array]
 
     def on_bars(self, bar):
         print(bar)
         if self.prediction is not None:
-            balanced_fund_data_rise_prob, conservative_fund_data_rise_prob, growth_fund_data_rise_prob, \
-            hk_equity_fund_data_rise_prob, hkdollar_bond_fund_data_rise_prob, stable_fund_data_rise_prob = self.prediction
-            print('Balance Fund rising probability : %.4f' % balanced_fund_data_rise_prob)
-            print('Conservative Fund rising probability : %.4f' % conservative_fund_data_rise_prob)
-            print('Growth Fund rising probability : %.4f' % growth_fund_data_rise_prob)
-            print('HK equity Fund rising probability : %.4f' % hk_equity_fund_data_rise_prob)
-            print('HK dollar Bond Fund rising probability : %.4f' % hkdollar_bond_fund_data_rise_prob)
-            print('Stable Fund rising probability : %.4f' % stable_fund_data_rise_prob)
+            print(bar['Date'])
+            self.prediction = self.probability_transform(self.prediction)
+            print('Balance Fund holding proportion : %.4f' % self.prediction[0])
+            print('Conservative Fund holding proportion : %.4f' % self.prediction[1])
+            print('Growth Fund holding proportion : %.4f' % self.prediction[2])
+            print('HK equity Fund holding proportion : %.4f' % self.prediction[3])
+            print('HK dollar Bond Fund holding proportion : %.4f' % self.prediction[4])
+            print('Stable Fund holding proportion : %.4f' % self.prediction[5])
+            # time.sleep(0.5)
+
+    def on_broker(self, bar):
+        if self.prediction is None:
+            return
 
 
     def on_classifier(self, bar):
@@ -62,7 +81,13 @@ class StrategyBacktesting(object):
         if self.total_bar_count % self.n_bars_after_retrain == 0:
             os.remove(model_builder.model_file_path)
         if not os.path.isfile(model_builder.model_file_path):
-            model_builder.train(data, n_days=10, req_return=0.005, is_save_model=True, reload_model=False)
+            model_builder.train(
+                data,
+                n_days=self.n_bars_after_retrain,
+                req_return=0.02,
+                is_save_model=True,
+                reload_model=False
+            )
         else:
             model_builder.load_model()
         test_data = [bar[feature] for feature in self.selected_features]
@@ -81,9 +106,13 @@ class StrategyBacktesting(object):
             if bar is None:
                 break
             self.on_bars(bar)
+            self.on_broker(bar)
             self.prediction = None
             # after trading hours
-            self.prediction = self.on_classifier(bar)
+            if self.is_benchmark:
+                self.prediction = [0.0, 0.0, 0.0, 1.0, 0.0, 0.0]
+            else:
+                self.prediction = self.on_classifier(bar)
             self.historical_data.append(bar)
             counter -= 1
             self.total_bar_count += 1
