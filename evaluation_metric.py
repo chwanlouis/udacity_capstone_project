@@ -29,13 +29,3 @@ class CarMddRatio(object):
             if dd > mdd:
                 mdd = dd
         return mdd
-
-    def get_car_mdd_ratio(self):
-        return self.car(self.date_list, self.price_list)/self.max_drawdown(self.price_list)
-
-
-if __name__ == '__main__':
-    file_name = 'dataset/HK_Equity_Fund_B_testing.csv'
-    df = pd.read_csv(file_name)
-    metric = CarMddRatio(df)
-    print(metric.get_car_mdd_ratio())
