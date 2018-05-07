@@ -6,8 +6,8 @@ from datetime import datetime
 class CarMddRatio(object):
     def __init__(self, data_frame):
         self.data_frame = data_frame
-        self.date_list = df.Date.values.tolist()
-        self.price_list = df.Price.values.tolist()
+        self.date_list = self.data_frame.Date.values.tolist()
+        self.price_list = self.data_frame.Price.values.tolist()
 
     @staticmethod
     def	car(_date, _price):

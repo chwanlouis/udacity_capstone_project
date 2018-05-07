@@ -26,7 +26,7 @@ class DataFeeder(object):
 
 
 class StrategyBacktesting(object):
-    def __init__(self, feeder, capital, classifier_type, selected_features, is_benchmark=True):
+    def __init__(self, feeder, capital, classifier_type, selected_features, is_benchmark=False):
         self.feeder = feeder
         self.capital = capital
         self.training_bars = 300
@@ -49,7 +49,8 @@ class StrategyBacktesting(object):
     @staticmethod
     def probability_transform(prob_array):
         base_sum = sum(prob_array)
-        return [prob/base_sum for prob in prob_array]
+        norm_prob_array = [prob/base_sum for prob in prob_array]
+        return norm_prob_array
 
     def on_bars(self, bar):
         print(bar)
@@ -67,13 +68,14 @@ class StrategyBacktesting(object):
     def on_broker(self, bar):
         if self.prediction is None:
             return
+        self.capital_arrange = [self.capital]
 
 
     def on_classifier(self, bar):
         if len(self.historical_data) < self.training_bars:
             return
         if not os.path.isdir('model/'):
-            os.path.mkdir('model/')
+            os.mkdir('model/')
         model_builder = self.classifier_type(
             features_name=self.selected_features
         )
