@@ -29,3 +29,6 @@ class CarMddRatio(object):
             if dd > mdd:
                 mdd = dd
         return mdd
+
+    def get_car_mdd_ratio(self):
+        return self.car(self.date_list, self.price_list) / self.max_drawdown(self.price_list)
