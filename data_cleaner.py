@@ -51,14 +51,15 @@ class SunLifeFundInfo(object):
         soup = BeautifulSoup(response.text, 'html.parser')
         table = soup.find_all('tbody')[0]
         all_values = table.find_all('tr')
-        df = pd.DataFrame(columns=['Date', 'Price'])
+        df = pd.DataFrame(columns=['Date Time', 'Open', 'High', 'Low', 'Close', 'Volume'])
         index = 0
         for row in all_values:
             try:
                 _date, _price = row.find_all('td')
                 _date = datetime.strptime(_date.get_text(), '%d/%m/%Y')
+                _date = '%s 00:00:00' % _date.strftime('%Y-%m-%d')
                 _price = float(_price.get_text().replace(' ', ''))
-                df.loc[index] = [_date, _price]
+                df.loc[index] = [_date, _price, _price, _price, _price, 1000000000]
                 index += 1
             except ValueError:
                 continue
@@ -77,35 +78,40 @@ class InvestingDotComDataHandler(object):
 
     @staticmethod
     def datetime_rename(dt):
-        if '-' in dt:
-            return dt
-        month, day, year = dt.replace(',', '').split(' ')
-        month_dict = {
-            'Jan': '01',
-            'Feb': '02',
-            'Mar': '03',
-            'Apr': '04',
-            'May': '05',
-            'Jun': '06',
-            'Jul': '07',
-            'Aug': '08',
-            'Sep': '09',
-            'Oct': '10',
-            'Nov': '11',
-            'Dec': '12'
-        }
-        month = month_dict[month]
-        return '%s-%s-%s' % (year, month, day)
+        if '-' not in dt:
+            month, day, year = dt.replace(',', '').split(' ')
+            month_dict = {
+                'Jan': '01',
+                'Feb': '02',
+                'Mar': '03',
+                'Apr': '04',
+                'May': '05',
+                'Jun': '06',
+                'Jul': '07',
+                'Aug': '08',
+                'Sep': '09',
+                'Oct': '10',
+                'Nov': '11',
+                'Dec': '12'
+            }
+            month = month_dict[month]
+            dt = '%s-%s-%s' % (year, month, day)
+        if ':' not in dt:
+            dt = '%s 00:00:00' % dt
+        return dt
 
     def cleaner(self, file_name):
         df = pd.read_csv(file_name)
+        df.columns = ['Date Time', 'Open', 'High', 'Low', 'Close']
         df['Date'] = [self.datetime_rename(dt) for dt in df['Date']]
-        order = ['Date', 'Open', 'High', 'Low', 'Price']
+        df['Volume'] = [1000000000 for _ in df['Date']]
+        order = ['Date Time', 'Open', 'High', 'Low', 'Close', 'Volume']
         df = df[order]
         df.to_csv(file_name, index=False)
 
     def run(self):
         for fname in self.file_name_list:
+            print(fname)
             self.cleaner(fname)
 
 if __name__ == '__main__':
