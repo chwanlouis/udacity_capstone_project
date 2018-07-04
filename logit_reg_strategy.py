@@ -1,3 +1,4 @@
+import time
 from pyalgotrade.barfeed.csvfeed import GenericBarFeed
 from pyalgotrade import strategy
 
@@ -9,12 +10,36 @@ class BenchmarkStrategy(strategy.BacktestingStrategy):
         self.position = None
         self.capital = capital
         self.target = target
+        self.historical_data = list()
 
     def onEnterOk(self, position):
         execInfo = position.getEntryOrder().getExecutionInfo()
         self.info("BUY %s at $%.2f" % (execInfo.getQuantity(), execInfo.getPrice()))
 
+    def onHistoricalData(self, bars):
+        data_dict = dict()
+        for instrument in self.instrument:
+            if instrument in bars.keys():
+                data_dict['%s_open' % instrument] = bars[instrument].getOpen()
+                data_dict['%s_high' % instrument] = bars[instrument].getHigh()
+                data_dict['%s_low' % instrument] = bars[instrument].getLow()
+                data_dict['%s_close' % instrument] = bars[instrument].getClose()
+                data_dict['%s_volume' % instrument] = bars[instrument].getVolume()
+                if 'datetime' not in data_dict.keys():
+                    data_dict['datetime'] = bars[instrument].getDateTime()
+            else:
+                data_dict['%s_open' % instrument] = None
+                data_dict['%s_high' % instrument] = None
+                data_dict['%s_low' % instrument] = None
+                data_dict['%s_close' % instrument] = None
+                data_dict['%s_volume' % instrument] = None
+        self.historical_data.append(data_dict)
+
     def onBars(self, bars):
+        # updating historical dataset
+        self.onHistoricalData(bars)
+        print(self.historical_data)
+        time.sleep(0.05)
         if self.target not in bars.keys():
             return
         bar = bars[self.target]
