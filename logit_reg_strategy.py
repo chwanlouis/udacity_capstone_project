@@ -1,4 +1,5 @@
 import time
+import pandas as pd
 from pyalgotrade.barfeed.csvfeed import GenericBarFeed
 from pyalgotrade import strategy
 
@@ -11,6 +12,18 @@ class BenchmarkStrategy(strategy.BacktestingStrategy):
         self.capital = capital
         self.target = target
         self.historical_data = list()
+        self.historical_df = None
+        self.historical_df_colnames = self.get_historical_df_colnames()
+
+    def get_historical_df_colnames(self):
+        colnames = list()
+        for instrument in self.instrument:
+            colnames.append('%s_open' % instrument)
+            colnames.append('%s_high' % instrument)
+            colnames.append('%s_low' % instrument)
+            colnames.append('%s_close' % instrument)
+            colnames.append('%s_volume' % instrument)
+        return colnames
 
     def onEnterOk(self, position):
         execInfo = position.getEntryOrder().getExecutionInfo()
@@ -34,20 +47,21 @@ class BenchmarkStrategy(strategy.BacktestingStrategy):
                 data_dict['%s_close' % instrument] = None
                 data_dict['%s_volume' % instrument] = None
         self.historical_data.append(data_dict)
+        # self.historical_df = pd.DataFrame(self.historical_data).interpolate()[self.historical_df_colnames].dropna()
 
     def onBars(self, bars):
         # updating historical dataset
         self.onHistoricalData(bars)
-        print(self.historical_data)
-        time.sleep(0.05)
         if self.target not in bars.keys():
             return
         bar = bars[self.target]
+        dt = bar.getDateTime()
         close = bar.getPrice()
+        print(dt, close)
         # Buy and hold
-        amount = self.capital / close
-        if self.position is None and amount >= 1:
-            self.position = self.enterLong(self.target, amount, True, False)
+        # amount = self.capital / close
+        # if self.position is None and amount >= 1:
+        #     self.position = self.enterLong(self.target, amount, True, False)
 
 
 if __name__ == '__main__':
