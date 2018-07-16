@@ -6,7 +6,7 @@ class BenchmarkStrategy(strategy.BacktestingStrategy):
     def __init__(self, feed, instrument, capital, target):
         super(BenchmarkStrategy, self).__init__(feed)
         self.instrument = instrument
-        self.position = None
+        self.positions = {k: None for k in self.instrument}
         self.capital = capital
         self.target = target
 
@@ -19,8 +19,8 @@ class BenchmarkStrategy(strategy.BacktestingStrategy):
         close = bar.getPrice()
         # Buy and hold
         amount = self.capital / close
-        if self.position is None and amount >= 1:
-            self.position = self.enterLong(self.target, amount, True, False)
+        if self.positions[self.target] is None and amount >= 1:
+            self.positions[self.target] = self.enterLong(self.target, amount, True, False)
 
 
 if __name__ == '__main__':

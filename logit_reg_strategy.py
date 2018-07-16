@@ -5,12 +5,11 @@ from pyalgotrade import strategy
 
 
 class BenchmarkStrategy(strategy.BacktestingStrategy):
-    def __init__(self, feed, instrument, capital, target):
+    def __init__(self, feed, instrument, capital):
         super(BenchmarkStrategy, self).__init__(feed)
         self.instrument = instrument
         self.position = None
         self.capital = capital
-        self.target = target
         self.historical_data = list()
         self.historical_df = None
         self.historical_df_colnames = self.get_historical_df_colnames()
@@ -49,19 +48,49 @@ class BenchmarkStrategy(strategy.BacktestingStrategy):
         self.historical_data.append(data_dict)
         # self.historical_df = pd.DataFrame(self.historical_data).interpolate()[self.historical_df_colnames].dropna()
 
+    def round_up_normalization(self, percentages):
+        total = sum(percentages.values())
+        normalized_percentages = {k: float(v) / total  for k, v in percentages.iteritems()}
+        percentages_times_100 = {k: int(v * 100) for k, v in normalized_percentages.iteritems()}
+        difference = 100 - sum(percentages_times_100.values())
+        percentages_times_100['conservative_fund'] += difference
+        return {k: float(v) / 100 for k, v in percentages_times_100.iteritems()}
+
+    def portfolio_adjustment(self, bars, percentages):
+        '''
+        Buy fund according to percentages
+
+        :param percentages: dictionary of percentages
+        ## format
+        percentages = {
+            'hk_equity_fund': 0.25,
+            'growth_fund': 0.0,
+            'balanced_fund': 0.25,
+            'conservative_fund': 0.25,
+            'hkdollar_bond_fund': 0.0,
+            'stable_fund': 0.25
+        }
+        :return: None
+        '''
+        # amount = self.capital / clos e
+        # if self.position is None and amount >= 1:
+        #     self.position = self.enterLong(self.target, amount, True, False)
+        percentages = self.round_up_normalization(percentages)
+
     def onBars(self, bars):
         # updating historical dataset
         self.onHistoricalData(bars)
-        if self.target not in bars.keys():
-            return
-        bar = bars[self.target]
-        dt = bar.getDateTime()
-        close = bar.getPrice()
-        print(dt, close)
-        # Buy and hold
-        # amount = self.capital / close
-        # if self.position is None and amount >= 1:
-        #     self.position = self.enterLong(self.target, amount, True, False)
+        # dt = bar.getDateTime()
+        # close = bar.getPrice()
+        percentages = {
+            'hk_equity_fund': 0.167,
+            'growth_fund': 0.167,
+            'balanced_fund': 0.167,
+            'conservative_fund': 0.165,
+            'hkdollar_bond_fund': 0.167,
+            'stable_fund': 0.167
+        }
+        self.portfolio_adjustment(bars, percentages)
 
 
 if __name__ == '__main__':
@@ -84,8 +113,7 @@ if __name__ == '__main__':
     benchmark_strategy = BenchmarkStrategy(
         feed=feed,
         instrument=instruments.keys(),
-        capital=1000000.0,
-        target='hk_equity_fund'
+        capital=1000000.0
     )
     benchmark_strategy.run()
     print(benchmark_strategy.getBroker().getEquity())
