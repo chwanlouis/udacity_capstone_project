@@ -14,12 +14,20 @@ class BenchmarkStrategy(strategy.BacktestingStrategy):
         execInfo = position.getEntryOrder().getExecutionInfo()
         self.info("BUY %s at $%.2f" % (execInfo.getQuantity(), execInfo.getPrice()))
 
+    def onEnterCanceled(self, position):
+        self.positions[self.target] = None
+
+    def onExitOk(self, position):
+        execInfo = position.getExitOrder().getExecutionInfo()
+        self.info("SELL at $%.2f" % (execInfo.getPrice()))
+        self.positions[self.target] = None
+
     def onBars(self, bars):
         bar = bars[self.target]
         close = bar.getPrice()
         # Buy and hold
-        amount = self.capital / close
-        if self.positions[self.target] is None and amount >= 1:
+        if self.positions[self.target] is None:
+            amount = int(self.getBroker().getEquity() / close)
             self.positions[self.target] = self.enterLong(self.target, amount, True, False)
 
 

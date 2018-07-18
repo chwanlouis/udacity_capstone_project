@@ -4,11 +4,15 @@ from pyalgotrade.barfeed.csvfeed import GenericBarFeed
 from pyalgotrade import strategy
 
 
-class BenchmarkStrategy(strategy.BacktestingStrategy):
+class LogisticRegressionStrategy(strategy.BacktestingStrategy):
     def __init__(self, feed, instrument, capital):
-        super(BenchmarkStrategy, self).__init__(feed)
+        super(LogisticRegressionStrategy, self).__init__(feed)
         self.instrument = instrument
-        self.position = None
+        self.mpf_asset = [
+            'hk_equity_fund', 'growth_fund', 'balanced_fund', 'conservative_fund', 'hkdollar_bond_fund', 'stable_fund'
+        ]
+        self.positions = {asset: None for asset in self.mpf_asset}
+        self.pending_order = list()
         self.capital = capital
         self.historical_data = list()
         self.historical_df = None
@@ -49,33 +53,52 @@ class BenchmarkStrategy(strategy.BacktestingStrategy):
         # self.historical_df = pd.DataFrame(self.historical_data).interpolate()[self.historical_df_colnames].dropna()
 
     def round_up_normalization(self, percentages):
+        '''
+        MPF adjustment requiring correct to nearest 1%
+        '''
         total = sum(percentages.values())
-        normalized_percentages = {k: float(v) / total  for k, v in percentages.iteritems()}
+        normalized_percentages = {k: float(v) / total for k, v in percentages.iteritems()}
         percentages_times_100 = {k: int(v * 100) for k, v in normalized_percentages.iteritems()}
         difference = 100 - sum(percentages_times_100.values())
         percentages_times_100['conservative_fund'] += difference
         return {k: float(v) / 100 for k, v in percentages_times_100.iteritems()}
 
+    def get_all_position_shares(self):
+        position_shares = dict()
+        for instrument, position in self.positions.iteritems():
+            if position is None:
+                position_shares[instrument] = None
+            else:
+                position_shares[instrument] = position.getShares()
+        return position_shares
+
+    def get_total_asset_value(self, bars, shares):
+        total_value = 0
+        for instrument, n_shares in shares.iteritems():
+            if n_shares is not None:
+                price = bars[instrument].getClose()
+                total_value += price * n_shares
+        return total_value
+
+    def all_position_exit(self):
+        for _, position in self.positions.iteritems():
+            position.exitMarket()
+
     def portfolio_adjustment(self, bars, percentages):
         '''
         Buy fund according to percentages
-
         :param percentages: dictionary of percentages
         ## format
         percentages = {
-            'hk_equity_fund': 0.25,
-            'growth_fund': 0.0,
-            'balanced_fund': 0.25,
-            'conservative_fund': 0.25,
-            'hkdollar_bond_fund': 0.0,
-            'stable_fund': 0.25
+            'hk_equity_fund': 0.25, 'growth_fund': 0.0, 'balanced_fund': 0.25,
+            'conservative_fund': 0.25, 'hkdollar_bond_fund': 0.0, 'stable_fund': 0.25
         }
         :return: None
         '''
-        # amount = self.capital / clos e
-        # if self.position is None and amount >= 1:
-        #     self.position = self.enterLong(self.target, amount, True, False)
         percentages = self.round_up_normalization(percentages)
+        all_position_shares = self.get_all_position_shares()
+        total_asset_value = self.get_total_asset_value(bars, all_position_shares)
+        print(total_asset_value)
 
     def onBars(self, bars):
         # updating historical dataset
@@ -110,10 +133,10 @@ if __name__ == '__main__':
     for instu, fname in instruments.iteritems():
         print('Importing data %s from file path %s' % (instu, fname))
         feed.addBarsFromCSV(instu, fname)
-    benchmark_strategy = BenchmarkStrategy(
+    logit_reg_strategy = LogisticRegressionStrategy(
         feed=feed,
         instrument=instruments.keys(),
         capital=1000000.0
     )
-    benchmark_strategy.run()
-    print(benchmark_strategy.getBroker().getEquity())
+    logit_reg_strategy.run()
+    print(logit_reg_strategy.getBroker().getEquity())
