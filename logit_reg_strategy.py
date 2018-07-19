@@ -1,19 +1,21 @@
 import time
 import pandas as pd
+from random import randint
 from pyalgotrade.barfeed.csvfeed import GenericBarFeed
 from pyalgotrade import strategy
 
 
 class LogisticRegressionStrategy(strategy.BacktestingStrategy):
     def __init__(self, feed, instrument, capital):
-        super(LogisticRegressionStrategy, self).__init__(feed)
+        super(LogisticRegressionStrategy, self).__init__(feed, capital)
         self.instrument = instrument
         self.mpf_asset = [
             'hk_equity_fund', 'growth_fund', 'balanced_fund', 'conservative_fund', 'hkdollar_bond_fund', 'stable_fund'
         ]
         self.positions = {asset: None for asset in self.mpf_asset}
+        self.current_percentages = None
+        self.previous_percentages = None
         self.pending_order = list()
-        self.capital = capital
         self.historical_data = list()
         self.historical_df = None
         self.historical_df_colnames = self.get_historical_df_colnames()
@@ -31,6 +33,16 @@ class LogisticRegressionStrategy(strategy.BacktestingStrategy):
     def onEnterOk(self, position):
         execInfo = position.getEntryOrder().getExecutionInfo()
         self.info("BUY %s at $%.2f" % (execInfo.getQuantity(), execInfo.getPrice()))
+
+    def onEnterCanceled(self, position):
+        instrument = position.getInstrument()
+        self.positions[instrument] = None
+
+    def onExitOk(self, position):
+        execInfo = position.getExitOrder().getExecutionInfo()
+        instrument = position.getInstrument()
+        self.info("SELL at $%.2f" % (execInfo.getPrice()))
+        self.positions[instrument] = None
 
     def onHistoricalData(self, bars):
         data_dict = dict()
@@ -56,7 +68,7 @@ class LogisticRegressionStrategy(strategy.BacktestingStrategy):
         '''
         MPF adjustment requiring correct to nearest 1%
         '''
-        total = sum(percentages.values())
+        total = float(sum(percentages.values()))
         normalized_percentages = {k: float(v) / total for k, v in percentages.iteritems()}
         percentages_times_100 = {k: int(v * 100) for k, v in normalized_percentages.iteritems()}
         difference = 100 - sum(percentages_times_100.values())
@@ -82,7 +94,8 @@ class LogisticRegressionStrategy(strategy.BacktestingStrategy):
 
     def all_position_exit(self):
         for _, position in self.positions.iteritems():
-            position.exitMarket()
+            if position is not None:
+                position.exitMarket()
 
     def portfolio_adjustment(self, bars, percentages):
         '''
@@ -95,25 +108,37 @@ class LogisticRegressionStrategy(strategy.BacktestingStrategy):
         }
         :return: None
         '''
-        percentages = self.round_up_normalization(percentages)
-        all_position_shares = self.get_all_position_shares()
-        total_asset_value = self.get_total_asset_value(bars, all_position_shares)
-        print(total_asset_value)
+        cash = self.getBroker().getEquity() - self.get_total_asset_value(bars, self.get_all_position_shares())
+        for asset, percent in percentages.iteritems():
+            # cash_arranged = percent * cash
+            # hands = int(cash_arranged / bars[asset].getPrice()) / 50000
+            # shares = hands * 5000
+            shares = 1
+            # print('ASSET:%s , shares to buy:%s' % (asset, shares))
+            if self.positions[asset] is None and shares > 0:
+                self.positions[asset] = self.enterLong(asset, shares, True, False)
 
     def onBars(self, bars):
         # updating historical dataset
         self.onHistoricalData(bars)
         # dt = bar.getDateTime()
         # close = bar.getPrice()
+        if 'hk_equity_fund' not in bars.keys():
+            return
         percentages = {
-            'hk_equity_fund': 0.167,
-            'growth_fund': 0.167,
-            'balanced_fund': 0.167,
-            'conservative_fund': 0.165,
-            'hkdollar_bond_fund': 0.167,
-            'stable_fund': 0.167
+            'hk_equity_fund': randint(1, 100),
+            'growth_fund': randint(1, 100),
+            'balanced_fund': randint(1, 100),
+            'conservative_fund': randint(1, 100),
+            'hkdollar_bond_fund': randint(1, 100),
+            'stable_fund': randint(1, 100)
         }
-        self.portfolio_adjustment(bars, percentages)
+        percentages = self.round_up_normalization(percentages)
+        self.current_percentages = percentages
+        if self.previous_percentages != self.current_percentages:
+            self.all_position_exit()
+            self.portfolio_adjustment(bars, percentages)
+        self.previous_percentages = self.current_percentages
 
 
 if __name__ == '__main__':
@@ -136,7 +161,7 @@ if __name__ == '__main__':
     logit_reg_strategy = LogisticRegressionStrategy(
         feed=feed,
         instrument=instruments.keys(),
-        capital=1000000.0
+        capital=1000.0
     )
     logit_reg_strategy.run()
     print(logit_reg_strategy.getBroker().getEquity())

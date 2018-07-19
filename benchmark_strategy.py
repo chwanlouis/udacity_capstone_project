@@ -4,10 +4,9 @@ from pyalgotrade import strategy
 
 class BenchmarkStrategy(strategy.BacktestingStrategy):
     def __init__(self, feed, instrument, capital, target):
-        super(BenchmarkStrategy, self).__init__(feed)
+        super(BenchmarkStrategy, self).__init__(feed, capital)
         self.instrument = instrument
         self.positions = {k: None for k in self.instrument}
-        self.capital = capital
         self.target = target
 
     def onEnterOk(self, position):
