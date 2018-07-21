@@ -1,6 +1,7 @@
 import time
 import pandas as pd
 from random import randint
+from datetime import datetime
 from pyalgotrade.barfeed.csvfeed import GenericBarFeed
 from pyalgotrade import strategy
 
@@ -15,7 +16,7 @@ class LogisticRegressionStrategy(strategy.BacktestingStrategy):
         self.positions = {asset: None for asset in self.mpf_asset}
         self.current_percentages = None
         self.previous_percentages = None
-        self.pending_order = list()
+        self.pending_order = None
         self.historical_data = list()
         self.historical_df = None
         self.historical_df_colnames = self.get_historical_df_colnames()
@@ -32,7 +33,7 @@ class LogisticRegressionStrategy(strategy.BacktestingStrategy):
 
     def onEnterOk(self, position):
         execInfo = position.getEntryOrder().getExecutionInfo()
-        self.info("BUY %s at $%.2f" % (execInfo.getQuantity(), execInfo.getPrice()))
+        self.info("BUY %s QTY %s at $%.2f" % (position.getInstrument(), execInfo.getQuantity(), execInfo.getPrice()))
 
     def onEnterCanceled(self, position):
         instrument = position.getInstrument()
@@ -110,10 +111,8 @@ class LogisticRegressionStrategy(strategy.BacktestingStrategy):
         '''
         cash = self.getBroker().getEquity() - self.get_total_asset_value(bars, self.get_all_position_shares())
         for asset, percent in percentages.iteritems():
-            # cash_arranged = percent * cash
-            # hands = int(cash_arranged / bars[asset].getPrice()) / 50000
-            # shares = hands * 5000
-            shares = 1
+            cash_arranged = percent * cash * 0.99
+            shares = int(cash_arranged / bars[asset].getPrice())
             # print('ASSET:%s , shares to buy:%s' % (asset, shares))
             if self.positions[asset] is None and shares > 0:
                 self.positions[asset] = self.enterLong(asset, shares, True, False)
@@ -121,23 +120,39 @@ class LogisticRegressionStrategy(strategy.BacktestingStrategy):
     def onBars(self, bars):
         # updating historical dataset
         self.onHistoricalData(bars)
-        # dt = bar.getDateTime()
         # close = bar.getPrice()
         if 'hk_equity_fund' not in bars.keys():
             return
-        percentages = {
-            'hk_equity_fund': randint(1, 100),
-            'growth_fund': randint(1, 100),
-            'balanced_fund': randint(1, 100),
-            'conservative_fund': randint(1, 100),
-            'hkdollar_bond_fund': randint(1, 100),
-            'stable_fund': randint(1, 100)
-        }
+        dt = bars['hk_equity_fund'].getDateTime()
+        dt_mid_point = datetime(2010, 1, 29)
+        if dt < dt_mid_point:
+            percentages = {
+                'hk_equity_fund': 0.5,
+                'growth_fund': 0.5,
+                'balanced_fund': 0,
+                'conservative_fund': 0,
+                'hkdollar_bond_fund': 0,
+                'stable_fund': 0
+            }
+        else:
+            percentages = {
+                'hk_equity_fund': 1,
+                'growth_fund': 0,
+                'balanced_fund': 0,
+                'conservative_fund': 0,
+                'hkdollar_bond_fund': 0,
+                'stable_fund': 0
+            }
         percentages = self.round_up_normalization(percentages)
         self.current_percentages = percentages
-        if self.previous_percentages != self.current_percentages:
-            self.all_position_exit()
+        if self.pending_order is not None:
+            print('Triggered')
             self.portfolio_adjustment(bars, percentages)
+            self.pending_order = None
+        if self.previous_percentages != self.current_percentages:
+            print(percentages)
+            self.all_position_exit()
+            self.pending_order = percentages
         self.previous_percentages = self.current_percentages
 
 
