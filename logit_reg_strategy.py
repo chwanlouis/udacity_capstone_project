@@ -16,6 +16,7 @@ class LogisticRegressionStrategy(strategy.BacktestingStrategy):
         self.positions = {asset: None for asset in self.mpf_asset}
         self.current_percentages = None
         self.previous_percentages = None
+        self.testing_datetime = datetime(2014, 8, 2)
         self.pending_order = None
         self.historical_data = list()
         self.historical_df = None
@@ -63,7 +64,6 @@ class LogisticRegressionStrategy(strategy.BacktestingStrategy):
                 data_dict['%s_close' % instrument] = None
                 data_dict['%s_volume' % instrument] = None
         self.historical_data.append(data_dict)
-        # self.historical_df = pd.DataFrame(self.historical_data).interpolate()[self.historical_df_colnames].dropna()
 
     def round_up_normalization(self, percentages):
         '''
@@ -118,11 +118,11 @@ class LogisticRegressionStrategy(strategy.BacktestingStrategy):
                 self.positions[asset] = self.enterLong(asset, shares, True, False)
 
     def onBars(self, bars):
-        # updating historical dataset
-        self.onHistoricalData(bars)
-        # close = bar.getPrice()
         if 'hk_equity_fund' not in bars.keys():
             return
+        # updating historical dataset in training time
+        if bars['hk_equity_fund'].getDateTime() < self.testing_datetime:
+            self.onHistoricalData(bars)
         dt = bars['hk_equity_fund'].getDateTime()
         dt_mid_point = datetime(2010, 1, 29)
         if dt < dt_mid_point:
@@ -146,11 +146,9 @@ class LogisticRegressionStrategy(strategy.BacktestingStrategy):
         percentages = self.round_up_normalization(percentages)
         self.current_percentages = percentages
         if self.pending_order is not None:
-            print('Triggered')
             self.portfolio_adjustment(bars, percentages)
             self.pending_order = None
         if self.previous_percentages != self.current_percentages:
-            print(percentages)
             self.all_position_exit()
             self.pending_order = percentages
         self.previous_percentages = self.current_percentages
