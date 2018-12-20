@@ -81,6 +81,7 @@ class DecisionTreeRegressorStrategy(strategy.BacktestingStrategy):
         for asset in self.mpf_asset:
             colname = '%s_close_return_t+%s' % (asset, days)
             historical_df[colname] = (historical_df['%s_close' % asset].shift(-days) - historical_df['%s_close' % asset]) / historical_df['%s_close' % asset]
+            historical_df[colname] = [1 if val > 0 else 0 for val in historical_df[colname]]
             y_colnames.append(colname)
         historical_df = historical_df.dropna()
         X_df = historical_df[self.selected_features]
@@ -93,6 +94,8 @@ class DecisionTreeRegressorStrategy(strategy.BacktestingStrategy):
         '''
         # print(percentages)
         total = float(sum(percentages.values()))
+        if not total > 0:
+            return None
         normalized_percentages = {k: float(v) / total for k, v in percentages.iteritems()}
         percentages_times_100 = {k: int(v * 100) for k, v in normalized_percentages.iteritems()}
         difference = 100 - sum(percentages_times_100.values())
@@ -169,6 +172,8 @@ class DecisionTreeRegressorStrategy(strategy.BacktestingStrategy):
             prediction = self.model.predict(X_bar)[0]
             percentages = {asset: val for asset, val in zip(self.mpf_asset, prediction)}
             percentages = self.round_up_normalization(percentages)
+            if percentages is None:
+                return
             self.current_percentages = percentages
             if self.pending_order is not None:
                 self.portfolio_adjustment(bars, percentages)
