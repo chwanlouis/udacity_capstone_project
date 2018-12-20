@@ -1,3 +1,4 @@
+from datetime import datetime
 from pyalgotrade.barfeed.csvfeed import GenericBarFeed
 from pyalgotrade import strategy
 from pyalgotrade.stratanalyzer import returns as rets
@@ -10,6 +11,8 @@ class BenchmarkStrategy(strategy.BacktestingStrategy):
         self.instrument = instrument
         self.positions = {k: None for k in self.instrument}
         self.target = target
+        self.testing_datetime = datetime(2014, 8, 2)
+        self.testing_end_datetime = datetime(2018, 1, 15)
 
     def onEnterOk(self, position):
         execInfo = position.getEntryOrder().getExecutionInfo()
@@ -29,6 +32,8 @@ class BenchmarkStrategy(strategy.BacktestingStrategy):
         bar = bars[self.target]
         close = bar.getPrice()
         # Buy and hold
+        if bar.getDateTime() < self.testing_datetime:
+            return
         if self.positions[self.target] is None:
             amount = int(self.getBroker().getEquity() / close)
             self.positions[self.target] = self.enterLong(self.target, amount, True, False)
