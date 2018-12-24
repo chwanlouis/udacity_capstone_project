@@ -1,5 +1,5 @@
-import pandas as pd
 import numpy as np
+import pandas as pd
 from datetime import datetime
 from pyalgotrade.barfeed.csvfeed import GenericBarFeed
 from pyalgotrade import strategy
