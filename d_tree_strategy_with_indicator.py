@@ -13,7 +13,7 @@ from sklearn.tree import DecisionTreeRegressor
 
 
 class DecisionTreeRegressorStrategy(strategy.BacktestingStrategy):
-    def __init__(self, feed, instrument, capital, selected_features):
+    def __init__(self, feed, instrument, capital, selected_features, predict_n_days):
         super(DecisionTreeRegressorStrategy, self).__init__(feed, capital)
         self.capital = capital
         self.instrument = instrument
@@ -47,6 +47,7 @@ class DecisionTreeRegressorStrategy(strategy.BacktestingStrategy):
         self.historical_data = list()
         self.historical_df = None
         self.selected_features = selected_features
+        self.predict_n_days = predict_n_days
         self.model = None
 
     def onEnterOk(self, position):
@@ -88,7 +89,7 @@ class DecisionTreeRegressorStrategy(strategy.BacktestingStrategy):
         data_dict = self.bars_to_data_dict(bars, indicators)
         self.historical_data.append(data_dict)
 
-    def data_preprocess(self, historical_df, days=5):
+    def data_preprocess(self, historical_df, days=30):
         y_colnames = list()
         for asset in self.mpf_asset:
             colname = '%s_close_return_t+%s' % (asset, days)
@@ -173,7 +174,13 @@ class DecisionTreeRegressorStrategy(strategy.BacktestingStrategy):
             'balanced_fund_rsi': self.balanced_fund_rsi[-1],
             'conservative_fund_rsi': self.conservative_fund_rsi[-1],
             'hkdollar_bond_fund_rsi': self.hkdollar_bond_fund_rsi[-1],
-            'stable_fund_rsi': self.stable_fund_rsi[-1]
+            'stable_fund_rsi': self.stable_fund_rsi[-1],
+            'hk_equity_fund_macd_histogram': self.hk_equity_fund_macd_histogram[-1],
+            'growth_fund_macd_histogram': self.growth_fund_macd_histogram[-1],
+            'balanced_fund_macd_histogram': self.balanced_fund_macd_histogram[-1],
+            'conservative_fund_macd_histogram': self.conservative_fund_macd_histogram[-1],
+            'hkdollar_bond_fund_macd_histogram': self.hkdollar_bond_fund_macd_histogram[-1],
+            'stable_fund_macd_histogram': self.stable_fund_macd_histogram[-1]
         }
         # updating historical dataset in training time
         if bars['hk_equity_fund'].getDateTime() < self.testing_datetime:
@@ -203,7 +210,7 @@ class DecisionTreeRegressorStrategy(strategy.BacktestingStrategy):
             self.previous_percentages = self.current_percentages
 
 
-def main():
+def main(selected_features, predict_n_days):
     feed = GenericBarFeed(frequency='DAY')
     instruments = {
         'hk_equity_fund': 'dataset/hk_equity_fund_data.csv',
@@ -223,17 +230,19 @@ def main():
     # selected_features = [
     #     'hk_equity_fund', 'growth_fund', 'balanced_fund', 'conservative_fund', 'hkdollar_bond_fund', 'stable_fund'
     # ]
-    selected_features = list()
-    indicators = [
-        'hk_equity_fund_rsi', 'growth_fund_rsi', 'balanced_fund_rsi', 'conservative_fund_rsi',
-        'hkdollar_bond_fund_rsi', 'stable_fund_rsi'
-    ]
-    selected_features += indicators
+    # selected_features = list()
+    # indicators = [
+    #     'hk_equity_fund_rsi', 'growth_fund_rsi', 'balanced_fund_rsi', 'conservative_fund_rsi',
+    #     'hkdollar_bond_fund_rsi', 'stable_fund_rsi'
+    # ]
+    # selected_features += indicators
+    # predict_n_days = 30
     tree_reg_strategy = DecisionTreeRegressorStrategy(
         feed=feed,
         instrument=instruments.keys(),
         capital=1000000.0,
-        selected_features=selected_features
+        selected_features=selected_features,
+        predict_n_days=predict_n_days
     )
     retAnalyzer = rets.Returns()
     tree_reg_strategy.attachAnalyzer(retAnalyzer)
@@ -254,7 +263,8 @@ def main():
     print "Sharpe ratio: %.2f" % (sharpeRatioAnalyzer.getSharpeRatio(0.03))
     print "Max. drawdown: %.2f %%" % (drawDownAnalyzer.getMaxDrawDown() * 100)
     print "Longest drawdown duration: %s" % (drawDownAnalyzer.getLongestDrawDownDuration())
-    print "Calmar ratio: %.4f" % (retAnalyzer.getCumulativeReturns()[-1] / drawDownAnalyzer.getMaxDrawDown())
+    calmar_ratio = retAnalyzer.getCumulativeReturns()[-1] / drawDownAnalyzer.getMaxDrawDown()
+    print "Calmar ratio: %.4f" % (calmar_ratio)
 
     print
     print "Total trades: %d" % (tradesAnalyzer.getCount())
@@ -297,7 +307,26 @@ def main():
         print "Returns std. dev.: %2.f %%" % (returns.std() * 100)
         print "Max. return: %2.f %%" % (returns.max() * 100)
         print "Min. return: %2.f %%" % (returns.min() * 100)
+    return calmar_ratio
 
 
 if __name__ == '__main__':
-    main()
+    selected_features_list = [
+        ['hk_equity_fund_rsi', 'growth_fund_rsi', 'balanced_fund_rsi', 'conservative_fund_rsi',
+        'hkdollar_bond_fund_rsi', 'stable_fund_rsi'],
+        ['hk_equity_fund_macd_histogram', 'growth_fund_macd_histogram',
+         'balanced_fund_macd_histogram', 'conservative_fund_macd_histogram', 'hkdollar_bond_fund_macd_histogram',
+         'stable_fund_macd_histogram'],
+        ['hk_equity_fund_rsi', 'growth_fund_rsi', 'balanced_fund_rsi', 'conservative_fund_rsi',
+         'hkdollar_bond_fund_rsi', 'stable_fund_rsi', 'hk_equity_fund_macd_histogram', 'growth_fund_macd_histogram',
+         'balanced_fund_macd_histogram', 'conservative_fund_macd_histogram', 'hkdollar_bond_fund_macd_histogram',
+         'stable_fund_macd_histogram']
+    ]
+    predict_n_days_list = [5, 10, 20, 30, 40, 50, 60]
+    results = list()
+    for selected_features in selected_features_list:
+        for predict_n_days in predict_n_days_list:
+            calmer = main(selected_features, predict_n_days)
+            results.append([selected_features, predict_n_days, calmer])
+    for result in results:
+        print(result)
