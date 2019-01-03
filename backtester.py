@@ -1,17 +1,22 @@
-import numpy as np
+import os
+import talib
 import pandas as pd
+import numpy as np
 from datetime import datetime
 from pyalgotrade.barfeed.csvfeed import GenericBarFeed
+from pyalgotrade.technical import rsi, ma, macd
 from pyalgotrade import strategy
 from pyalgotrade.stratanalyzer import returns as rets
 from pyalgotrade.stratanalyzer import sharpe, drawdown, trades
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.tree import DecisionTreeRegressor
+from sklearn.neural_network import MLPClassifier
+from sklearn.linear_model import LogisticRegression
 
 
 class DecisionTreeRegressorStrategy(strategy.BacktestingStrategy):
-    def __init__(self, feed, instrument, capital, selected_features):
+    def __init__(self, feed, instrument, capital, selected_features, predict_n_days, model_form):
         super(DecisionTreeRegressorStrategy, self).__init__(feed, capital)
         self.capital = capital
         self.instrument = instrument
@@ -21,23 +26,33 @@ class DecisionTreeRegressorStrategy(strategy.BacktestingStrategy):
         self.positions = {asset: None for asset in self.mpf_asset}
         self.current_percentages = None
         self.previous_percentages = None
+        self.hk_equity_fund_macd = macd.MACD(feed['hk_equity_fund'].getCloseDataSeries(), 12, 26, 9)
+        self.hk_equity_fund_macd_histogram = self.hk_equity_fund_macd.getHistogram()
+        self.growth_fund_macd = macd.MACD(feed['growth_fund'].getCloseDataSeries(), 12, 26, 9)
+        self.growth_fund_macd_histogram = self.growth_fund_macd.getHistogram()
+        self.balanced_fund_macd = macd.MACD(feed['balanced_fund'].getCloseDataSeries(), 12, 26, 9)
+        self.balanced_fund_macd_histogram = self.balanced_fund_macd.getHistogram()
+        self.conservative_fund_macd = macd.MACD(feed['conservative_fund'].getCloseDataSeries(), 12, 26, 9)
+        self.conservative_fund_macd_histogram = self.conservative_fund_macd.getHistogram()
+        self.hkdollar_bond_fund_macd = macd.MACD(feed['hkdollar_bond_fund'].getCloseDataSeries(), 12, 26, 9)
+        self.hkdollar_bond_fund_macd_histogram = self.hkdollar_bond_fund_macd.getHistogram()
+        self.stable_fund_macd = macd.MACD(feed['stable_fund'].getCloseDataSeries(), 12, 26, 9)
+        self.stable_fund_macd_histogram = self.stable_fund_macd.getHistogram()
+        self.hk_equity_fund_rsi = rsi.RSI(feed['hk_equity_fund'].getCloseDataSeries(), 14)
+        self.growth_fund_rsi = rsi.RSI(feed['growth_fund'].getCloseDataSeries(), 14)
+        self.balanced_fund_rsi = rsi.RSI(feed['balanced_fund'].getCloseDataSeries(), 14)
+        self.conservative_fund_rsi = rsi.RSI(feed['conservative_fund'].getCloseDataSeries(), 14)
+        self.hkdollar_bond_fund_rsi = rsi.RSI(feed['hkdollar_bond_fund'].getCloseDataSeries(), 14)
+        self.stable_fund_rsi = rsi.RSI(feed['stable_fund'].getCloseDataSeries(), 14)
         self.testing_datetime = datetime(2014, 8, 2)
         self.testing_end_datetime = datetime(2018, 1, 15)
         self.pending_order = None
         self.historical_data = list()
         self.historical_df = None
         self.selected_features = selected_features
+        self.predict_n_days = predict_n_days
+        self.model_form = model_form
         self.model = None
-
-    def get_historical_df_colnames(self):
-        colnames = list()
-        for instrument in self.instrument:
-            colnames.append('%s_open' % instrument)
-            colnames.append('%s_high' % instrument)
-            colnames.append('%s_low' % instrument)
-            colnames.append('%s_close' % instrument)
-            colnames.append('%s_volume' % instrument)
-        return colnames
 
     def onEnterOk(self, position):
         execInfo = position.getEntryOrder().getExecutionInfo()
@@ -53,7 +68,7 @@ class DecisionTreeRegressorStrategy(strategy.BacktestingStrategy):
         self.info("SELL at $%.2f" % (execInfo.getPrice()))
         self.positions[instrument] = None
 
-    def bars_to_data_dict(self, bars):
+    def bars_to_data_dict(self, bars, indicators):
         data_dict = dict()
         for instrument in self.instrument:
             if instrument in bars.keys():
@@ -70,18 +85,20 @@ class DecisionTreeRegressorStrategy(strategy.BacktestingStrategy):
                 data_dict['%s_low' % instrument] = None
                 data_dict['%s_close' % instrument] = None
                 data_dict['%s_volume' % instrument] = None
+        for key, val in indicators.iteritems():
+            data_dict[key] = val
         return data_dict
 
-    def onHistoricalData(self, bars):
-        data_dict = self.bars_to_data_dict(bars)
+    def onHistoricalData(self, bars, indicators):
+        data_dict = self.bars_to_data_dict(bars, indicators)
         self.historical_data.append(data_dict)
 
-    def data_preprocess(self, historical_df, days=20):
+    def data_preprocess(self, historical_df, days=30):
         y_colnames = list()
         for asset in self.mpf_asset:
             colname = '%s_close_return_t+%s' % (asset, days)
             historical_df[colname] = (historical_df['%s_close' % asset].shift(-days) - historical_df['%s_close' % asset]) / historical_df['%s_close' % asset]
-            historical_df[colname] = [1 if val > 0 else 0 for val in historical_df[colname]]
+            historical_df[colname] = [1 if val > 0.01 else 0 for val in historical_df[colname]]
             y_colnames.append(colname)
         historical_df = historical_df.dropna()
         X_df = historical_df[self.selected_features]
@@ -92,15 +109,15 @@ class DecisionTreeRegressorStrategy(strategy.BacktestingStrategy):
         '''
         MPF adjustment requiring correct to nearest 1%
         '''
-        # print(percentages)
         total = float(sum(percentages.values()))
-        if not total > 0:
-            return None
-        normalized_percentages = {k: float(v) / total for k, v in percentages.iteritems()}
-        percentages_times_100 = {k: int(v * 100) for k, v in normalized_percentages.iteritems()}
-        difference = 100 - sum(percentages_times_100.values())
-        percentages_times_100['conservative_fund'] += difference
-        return {k: float(v) / 100 for k, v in percentages_times_100.iteritems()}
+        if total > 0:
+            normalized_percentages = {k: float(v) / total for k, v in percentages.iteritems()}
+            percentages_times_100 = {k: int(v * 100) for k, v in normalized_percentages.iteritems()}
+            difference = 100 - sum(percentages_times_100.values())
+            percentages_times_100['conservative_fund'] += difference
+            return {k: float(v) / 100 for k, v in percentages_times_100.iteritems()}
+        else:
+            return percentages
 
     def get_all_position_shares(self):
         position_shares = dict()
@@ -144,20 +161,28 @@ class DecisionTreeRegressorStrategy(strategy.BacktestingStrategy):
                 self.positions[asset] = self.enterLong(asset, shares, True, False)
 
     def training_model(self, X, y):
-        normalizer = StandardScaler()
-        clf = DecisionTreeRegressor(random_state=1)
-        pipeline = Pipeline(
-            [('normalizer', normalizer),
-             ('clf', clf)]
-        )
-        return pipeline.fit(X, y)
+        return self.model_form.fit(X, y)
 
     def onBars(self, bars):
         if 'hk_equity_fund' not in bars.keys():
             return
+        indicators = {
+            'hk_equity_fund_rsi': self.hk_equity_fund_rsi[-1],
+            'growth_fund_rsi': self.growth_fund_rsi[-1],
+            'balanced_fund_rsi': self.balanced_fund_rsi[-1],
+            'conservative_fund_rsi': self.conservative_fund_rsi[-1],
+            'hkdollar_bond_fund_rsi': self.hkdollar_bond_fund_rsi[-1],
+            'stable_fund_rsi': self.stable_fund_rsi[-1],
+            'hk_equity_fund_macd_histogram': self.hk_equity_fund_macd_histogram[-1],
+            'growth_fund_macd_histogram': self.growth_fund_macd_histogram[-1],
+            'balanced_fund_macd_histogram': self.balanced_fund_macd_histogram[-1],
+            'conservative_fund_macd_histogram': self.conservative_fund_macd_histogram[-1],
+            'hkdollar_bond_fund_macd_histogram': self.hkdollar_bond_fund_macd_histogram[-1],
+            'stable_fund_macd_histogram': self.stable_fund_macd_histogram[-1]
+        }
         # updating historical dataset in training time
         if bars['hk_equity_fund'].getDateTime() < self.testing_datetime:
-            self.onHistoricalData(bars)
+            self.onHistoricalData(bars, indicators)
         elif self.historical_df is None:
             self.historical_df = pd.DataFrame(self.historical_data)
             # drop NaNs
@@ -165,15 +190,14 @@ class DecisionTreeRegressorStrategy(strategy.BacktestingStrategy):
             X, y = self.data_preprocess(self.historical_df)
             self.model = self.training_model(X, y)
         if self.model is not None:
-            data_dict = self.bars_to_data_dict(bars)
+            data_dict = self.bars_to_data_dict(bars, indicators)
             X_bar = pd.DataFrame(data_dict, index=[0])[self.selected_features].values
             if any([x is None for x in X_bar[0]]):
                 return
             prediction = self.model.predict(X_bar)[0]
             percentages = {asset: val for asset, val in zip(self.mpf_asset, prediction)}
+            # print(percentages)
             percentages = self.round_up_normalization(percentages)
-            if percentages is None:
-                return
             self.current_percentages = percentages
             if self.pending_order is not None:
                 self.portfolio_adjustment(bars, percentages)
@@ -184,7 +208,7 @@ class DecisionTreeRegressorStrategy(strategy.BacktestingStrategy):
             self.previous_percentages = self.current_percentages
 
 
-def main():
+def main(selected_features, predict_n_days, model_form):
     feed = GenericBarFeed(frequency='DAY')
     instruments = {
         'hk_equity_fund': 'dataset/hk_equity_fund_data.csv',
@@ -201,11 +225,23 @@ def main():
     for instu, fname in instruments.iteritems():
         print('Importing data %s from file path %s' % (instu, fname))
         feed.addBarsFromCSV(instu, fname)
+    # selected_features = [
+    #     'hk_equity_fund', 'growth_fund', 'balanced_fund', 'conservative_fund', 'hkdollar_bond_fund', 'stable_fund'
+    # ]
+    # selected_features = list()
+    # indicators = [
+    #     'hk_equity_fund_rsi', 'growth_fund_rsi', 'balanced_fund_rsi', 'conservative_fund_rsi',
+    #     'hkdollar_bond_fund_rsi', 'stable_fund_rsi'
+    # ]
+    # selected_features += indicators
+    # predict_n_days = 30
     tree_reg_strategy = DecisionTreeRegressorStrategy(
         feed=feed,
         instrument=instruments.keys(),
         capital=1000000.0,
-        selected_features=['%s_close' % asset for asset in sorted(instruments.keys())]
+        selected_features=selected_features,
+        predict_n_days=predict_n_days,
+        model_form=model_form
     )
     retAnalyzer = rets.Returns()
     tree_reg_strategy.attachAnalyzer(retAnalyzer)
@@ -217,12 +253,17 @@ def main():
     tree_reg_strategy.attachAnalyzer(tradesAnalyzer)
     tree_reg_strategy.run()
 
+    print('************************')
+    print('** Backtesting Report **')
+    print('************************')
+
     print "Final portfolio value: $%.2f" % tree_reg_strategy.getResult()
     print "Cumulative returns: %.2f %%" % (retAnalyzer.getCumulativeReturns()[-1] * 100)
-    print "Sharpe ratio: %.2f" % (sharpeRatioAnalyzer.getSharpeRatio(0.05))
+    print "Sharpe ratio: %.2f" % (sharpeRatioAnalyzer.getSharpeRatio(0.03))
     print "Max. drawdown: %.2f %%" % (drawDownAnalyzer.getMaxDrawDown() * 100)
     print "Longest drawdown duration: %s" % (drawDownAnalyzer.getLongestDrawDownDuration())
-    print "Calmar ratio: %.4f" % (retAnalyzer.getCumulativeReturns()[-1] / drawDownAnalyzer.getMaxDrawDown())
+    calmar_ratio = retAnalyzer.getCumulativeReturns()[-1] / drawDownAnalyzer.getMaxDrawDown()
+    print "Calmar ratio: %.4f" % (calmar_ratio)
 
     print
     print "Total trades: %d" % (tradesAnalyzer.getCount())
@@ -265,8 +306,52 @@ def main():
         print "Returns std. dev.: %2.f %%" % (returns.std() * 100)
         print "Max. return: %2.f %%" % (returns.max() * 100)
         print "Min. return: %2.f %%" % (returns.min() * 100)
+    return calmar_ratio
+
+
+def logger(string, file_name):
+    if not os.path.isfile(file_name):
+        mode = 'w'
+    else:
+        mode = 'a'
+    if '\n' not in string:
+        string += '\n'
+    with open(file_name, mode) as file:
+        file.write(string)
 
 
 if __name__ == '__main__':
-    main()
-
+    if not os.path.isdir('log'):
+        os.mkdir('log')
+    selected_features_list = [
+        ['hk_equity_fund_rsi', 'growth_fund_rsi', 'balanced_fund_rsi', 'conservative_fund_rsi',
+        'hkdollar_bond_fund_rsi', 'stable_fund_rsi'],
+        ['hk_equity_fund_macd_histogram', 'growth_fund_macd_histogram',
+         'balanced_fund_macd_histogram', 'conservative_fund_macd_histogram', 'hkdollar_bond_fund_macd_histogram',
+         'stable_fund_macd_histogram'],
+        ['hk_equity_fund_rsi', 'growth_fund_rsi', 'balanced_fund_rsi', 'conservative_fund_rsi',
+         'hkdollar_bond_fund_rsi', 'stable_fund_rsi', 'hk_equity_fund_macd_histogram', 'growth_fund_macd_histogram',
+         'balanced_fund_macd_histogram', 'conservative_fund_macd_histogram', 'hkdollar_bond_fund_macd_histogram',
+         'stable_fund_macd_histogram']
+    ]
+    predict_n_days_list = [5, 10, 20, 30, 40, 50, 60]
+    model_forms = {
+        'decision_tree': Pipeline([('normalizer', StandardScaler()), ('clf', DecisionTreeRegressor(random_state=1))]),
+        'mlp_classifier': Pipeline([('normalizer', StandardScaler()), ('clf', MLPClassifier(random_state=1))])
+    }
+    results = list()
+    log_file_name = 'log/backtesting_result.txt'
+    for selected_features in selected_features_list:
+        for predict_n_days in predict_n_days_list:
+            for model_string, model_form in model_forms.items():
+                calmar = main(selected_features, predict_n_days, model_form)
+                results.append([selected_features, predict_n_days, calmar])
+                model_form_string = 'model_form:%s' % model_string
+                selected_features_string = 'selected_features:%s' % ','.join(selected_features)
+                predict_n_days_string = 'predict_n_days:%s' % predict_n_days
+                calmar_string = 'calmar_ratio:%s' % calmar
+                logger(model_form_string, log_file_name)
+                logger(selected_features_string, log_file_name)
+                logger(predict_n_days_string, log_file_name)
+                logger(calmar_string, log_file_name)
+                logger('\n', log_file_name)

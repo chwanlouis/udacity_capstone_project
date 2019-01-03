@@ -6,7 +6,6 @@ import os
 def md2html(mdstr):
     exts = ['markdown.extensions.extra', 'markdown.extensions.codehilite', 'markdown.extensions.tables',
             'markdown.extensions.toc']
-
     html = '''
     <html lang="zh-cn">
     <head>
@@ -19,7 +18,6 @@ def md2html(mdstr):
     </body>
     </html>
     '''
-
     ret = markdown.markdown(mdstr, extensions=exts)
     return html % ret
 
@@ -31,16 +29,12 @@ if __name__ == '__main__':
     infile = open(infile_name, 'r')
     md = infile.read()
     infile.close()
-
     if os.path.exists(html_name):
         os.remove(html_name)
-
     outfile = open(html_name, 'a')
     outfile.write(md2html(md))
     outfile.close()
-
     if os.path.exists(pdf_name):
         os.remove(pdf_name)
-
     config = pdfkit.configuration(wkhtmltopdf="C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe")
     pdfkit.from_file(html_name, pdf_name, configuration=config)

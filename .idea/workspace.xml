@@ -1,7 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="21c9de50-a663-4a37-bed6-3afaa1f3af40" name="Default" comment="" />
+    <list default="true" id="21c9de50-a663-4a37-bed6-3afaa1f3af40" name="Default" comment="">
+      <change type="DELETED" beforePath="$PROJECT_DIR$/decision_tree_reg_strategy.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/mlp_classifier_strategy.py" afterPath="" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/d_tree_strategy_with_indicator.py" afterPath="$PROJECT_DIR$/backtester.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/md_figure/fig_1.png" afterPath="$PROJECT_DIR$/md_figure/fig_1.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/proposal.pdf" afterPath="$PROJECT_DIR$/proposal.pdf" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/udacity_capstone_project.iml" afterPath="$PROJECT_DIR$/.idea/udacity_capstone_project.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.ipynb_checkpoints/Untitled-Copy1-checkpoint.ipynb" afterPath="$PROJECT_DIR$/.ipynb_checkpoints/Untitled-Copy1-checkpoint.ipynb" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.ipynb_checkpoints/Untitled-checkpoint.ipynb" afterPath="$PROJECT_DIR$/.ipynb_checkpoints/Untitled-checkpoint.ipynb" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.ipynb_checkpoints/report-checkpoint.ipynb" afterPath="$PROJECT_DIR$/.ipynb_checkpoints/report-checkpoint.ipynb" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/benchmark_strategy.py" afterPath="$PROJECT_DIR$/benchmark_strategy.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data_cleaner.py" afterPath="$PROJECT_DIR$/data_cleaner.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataset/HK_Equity_Fund_B_testing.csv" afterPath="$PROJECT_DIR$/dataset/HK_Equity_Fund_B_testing.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataset/HSI_investing_com.csv" afterPath="$PROJECT_DIR$/dataset/HSI_investing_com.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataset/IXIC_investing_com.csv" afterPath="$PROJECT_DIR$/dataset/IXIC_investing_com.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataset/us10yrbondyield_investing_com.csv" afterPath="$PROJECT_DIR$/dataset/us10yrbondyield_investing_com.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataset/us2yrbondyield_investing_com.csv" afterPath="$PROJECT_DIR$/dataset/us2yrbondyield_investing_com.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/evaluation_metric.py" afterPath="$PROJECT_DIR$/evaluation_metric.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/get_proposal_pdf.py" afterPath="$PROJECT_DIR$/get_proposal_pdf.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/github-markdown.css" afterPath="$PROJECT_DIR$/github-markdown.css" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/plotting.py" afterPath="$PROJECT_DIR$/plotting.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/proposal.html" afterPath="$PROJECT_DIR$/proposal.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/proposal.md" afterPath="$PROJECT_DIR$/proposal.md" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/report.ipynb" afterPath="$PROJECT_DIR$/report.ipynb" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -11,71 +37,23 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="decision_tree_reg_strategy.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/decision_tree_reg_strategy.py">
+      <file leaf-file-name="backtester.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/backtester.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="567">
-              <caret line="229" column="48" lean-forward="true" selection-start-line="229" selection-start-column="48" selection-end-line="229" selection-end-column="48" />
+            <state relative-caret-position="327">
+              <caret line="337" column="19" lean-forward="false" selection-start-line="337" selection-start-column="19" selection-end-line="337" selection-end-column="19" />
               <folding>
-                <element signature="e#0#19#0" expanded="true" />
+                <element signature="e#0#9#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="README.md" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/README.md">
-          <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-            <state split_layout="SPLIT">
-              <first_editor relative-caret-position="408">
-                <caret line="17" column="0" lean-forward="false" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
-                <folding />
-              </first_editor>
-              <second_editor />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="proposal.md" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/proposal.md">
-          <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-            <state split_layout="SPLIT">
-              <first_editor relative-caret-position="1440">
-                <caret line="60" column="38" lean-forward="false" selection-start-line="60" selection-start-column="38" selection-end-line="60" selection-end-column="38" />
-                <folding />
-              </first_editor>
-              <second_editor />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="position.py" pinned="false" current-in-tab="false">
-        <entry file="file://C:/ProgramData/Anaconda2/Lib/site-packages/pyalgotrade/strategy/position.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="5712">
-              <caret line="242" column="21" lean-forward="false" selection-start-line="242" selection-start-column="8" selection-end-line="242" selection-end-column="21" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="benchmark_strategy.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="benchmark_strategy.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/benchmark_strategy.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="600">
-              <caret line="76" column="9" lean-forward="true" selection-start-line="76" selection-start-column="9" selection-end-line="76" selection-end-column="9" />
-              <folding>
-                <element signature="e#0#54#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="hk_equity_fund_data.csv" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/dataset/hk_equity_fund_data.csv">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="72">
-              <caret line="3" column="8" lean-forward="false" selection-start-line="3" selection-start-column="8" selection-end-line="3" selection-end-column="8" />
+            <state relative-caret-position="461">
+              <caret line="73" column="0" lean-forward="true" selection-start-line="73" selection-start-column="0" selection-end-line="73" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -96,6 +74,15 @@
       <find>Data</find>
       <find>self.historical_df</find>
       <find>self.historical_df_colnames</find>
+      <find>get_forex</find>
+      <find>option_12</find>
+      <find>get_historical_df_colnames</find>
+      <find>self.testing_datetime</find>
+      <find>self.testing_</find>
+      <find>self.selected_features</find>
+      <find>self.data</find>
+      <find>bars_to_data_dict</find>
+      <find>data_preprocess</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -105,7 +92,6 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/github-markdown.css" />
-        <option value="$PROJECT_DIR$/get_proposal_pdf.py" />
         <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/proposal.md" />
         <option value="$PROJECT_DIR$/dataset/processed_data.csv" />
@@ -121,17 +107,21 @@
         <option value="$PROJECT_DIR$/dataset/us2yrbondyield_investing_com.csv" />
         <option value="$PROJECT_DIR$/report.ipynb" />
         <option value="$PROJECT_DIR$/timer.py" />
-        <option value="$PROJECT_DIR$/logit_reg_strategy.py" />
+        <option value="$PROJECT_DIR$/../../projects/international_futures/test.py" />
         <option value="$PROJECT_DIR$/benchmark_strategy.py" />
         <option value="$PROJECT_DIR$/decision_tree_reg_strategy.py" />
+        <option value="$PROJECT_DIR$/get_proposal_pdf.py" />
+        <option value="$PROJECT_DIR$/mlp_classifier_strategy.py" />
+        <option value="$PROJECT_DIR$/logit_reg_strategy.py" />
+        <option value="$PROJECT_DIR$/d_tree_strategy_with_indicator.py" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-17" />
-    <option name="y" value="26" />
-    <option name="width" value="1920" />
-    <option name="height" value="1040" />
+  <component name="ProjectFrameBounds" extendedState="7">
+    <option name="x" value="-8" />
+    <option name="y" value="-8" />
+    <option name="width" value="1936" />
+    <option name="height" value="1056" />
   </component>
   <component name="ProjectView">
     <navigator currentView="ProjectPane" proportions="" version="1">
@@ -159,7 +149,7 @@
             <path>
               <item name="udacity_capstone_project" type="b2602c69:ProjectViewProjectNode" />
               <item name="udacity_capstone_project" type="462c0819:PsiDirectoryNode" />
-              <item name="dataset" type="462c0819:PsiDirectoryNode" />
+              <item name="log" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -305,10 +295,9 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
-    <editor active="true" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="7" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.16510417" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.16041666" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.30965006" sideWeight="0.13802083" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -356,49 +345,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$USER_HOME$/Anaconda3/Lib/site-packages/markdown/preprocessors.py" />
-    <entry file="file://$PROJECT_DIR$/proposal.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/github-markdown.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="192">
-          <caret line="8" column="19" lean-forward="false" selection-start-line="8" selection-start-column="19" selection-end-line="8" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/get_proposal_pdf.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="216">
-          <caret line="9" column="14" lean-forward="true" selection-start-line="9" selection-start-column="14" selection-end-line="9" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/README.md">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/get_proposal_pdf.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="696">
-          <caret line="31" column="22" lean-forward="true" selection-start-line="31" selection-start-column="22" selection-end-line="31" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/proposal.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/github-markdown.css">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="192">
@@ -476,13 +422,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/learning_agent.py" />
-    <entry file="file://$PROJECT_DIR$/get_proposal_pdf.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="672">
-          <caret line="30" column="35" lean-forward="true" selection-start-line="30" selection-start-column="35" selection-end-line="30" selection-end-column="35" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://C:/ProgramData/Anaconda2/Lib/site-packages/pyalgotrade/bitstamp/barfeed.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -511,19 +450,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://C:/ProgramData/Anaconda2/Lib/site-packages/pyalgotrade/strategy/position.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="5712">
-          <caret line="242" column="21" lean-forward="false" selection-start-line="242" selection-start-column="8" selection-end-line="242" selection-end-column="21" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://C:/ProgramData/Anaconda2/Lib/site-packages/pyalgotrade/strategy/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-8415">
           <caret line="32" column="6" lean-forward="false" selection-start-line="32" selection-start-column="6" selection-end-line="32" selection-end-column="6" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -610,20 +540,11 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/timer.py" />
-    <entry file="file://$PROJECT_DIR$/dataset/hk_equity_fund_data.csv">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="72">
-          <caret line="3" column="8" lean-forward="false" selection-start-line="3" selection-start-column="8" selection-end-line="3" selection-end-column="8" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
           <first_editor relative-caret-position="408">
             <caret line="17" column="0" lean-forward="false" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
-            <folding />
           </first_editor>
           <second_editor />
         </state>
@@ -639,7 +560,6 @@
         <state split_layout="SPLIT">
           <first_editor relative-caret-position="1440">
             <caret line="60" column="38" lean-forward="false" selection-start-line="60" selection-start-column="38" selection-end-line="60" selection-end-column="38" />
-            <folding />
           </first_editor>
           <second_editor />
         </state>
@@ -650,39 +570,108 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/dataset/balanced_fund_data.csv">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="528">
-          <caret line="22" column="47" lean-forward="false" selection-start-line="22" selection-start-column="47" selection-end-line="22" selection-end-column="47" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://C:/ProgramData/Anaconda2/Lib/site-packages/pyalgotrade/stratanalyzer/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="606">
           <caret line="27" column="7" lean-forward="true" selection-start-line="27" selection-start-column="7" selection-end-line="27" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/dataset/balanced_fund_data.csv">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="360">
+          <caret line="15" column="60" lean-forward="true" selection-start-line="15" selection-start-column="60" selection-end-line="15" selection-end-column="60" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/ProgramData/Anaconda2/Lib/site-packages/pyalgotrade/strategy/position.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="845">
+          <caret line="242" column="21" lean-forward="false" selection-start-line="242" selection-start-column="8" selection-end-line="242" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/dataset/hk_equity_fund_data.csv">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="24">
+          <caret line="3" column="8" lean-forward="false" selection-start-line="3" selection-start-column="8" selection-end-line="3" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/ProgramData/Anaconda2/Lib/site-packages/pyalgotrade/stratanalyzer/returns.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="701">
+          <caret line="232" column="8" lean-forward="false" selection-start-line="232" selection-start-column="8" selection-end-line="232" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/ProgramData/Anaconda2/Lib/site-packages/talib/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../projects/international_futures/test.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="293">
+          <caret line="1877" column="76" lean-forward="false" selection-start-line="1877" selection-start-column="76" selection-end-line="1877" selection-end-column="76" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/ProgramData/Anaconda2/Lib/site-packages/pyalgotrade/technical/macd.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1416">
+          <caret line="60" column="24" lean-forward="true" selection-start-line="60" selection-start-column="24" selection-end-line="60" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/get_proposal_pdf.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="389">
+          <caret line="24" column="26" lean-forward="true" selection-start-line="24" selection-start-column="26" selection-end-line="24" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/logit_reg_strategy.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2463">
+          <caret line="328" column="0" lean-forward="true" selection-start-line="328" selection-start-column="0" selection-end-line="328" selection-end-column="0" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mlp_classifier_strategy.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="639">
+          <caret line="331" column="39" lean-forward="true" selection-start-line="323" selection-start-column="12" selection-end-line="331" selection-end-column="39" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/log/backtesting_result.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/backtester.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="327">
+          <caret line="337" column="19" lean-forward="false" selection-start-line="337" selection-start-column="19" selection-end-line="337" selection-end-column="19" />
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/benchmark_strategy.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="600">
-          <caret line="76" column="9" lean-forward="true" selection-start-line="76" selection-start-column="9" selection-end-line="76" selection-end-column="9" />
-          <folding>
-            <element signature="e#0#54#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/decision_tree_reg_strategy.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="567">
-          <caret line="229" column="48" lean-forward="true" selection-start-line="229" selection-start-column="48" selection-end-line="229" selection-end-column="48" />
-          <folding>
-            <element signature="e#0#19#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="461">
+          <caret line="73" column="0" lean-forward="true" selection-start-line="73" selection-start-column="0" selection-end-line="73" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
