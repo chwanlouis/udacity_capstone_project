@@ -15,9 +15,9 @@ from sklearn.neural_network import MLPClassifier
 from sklearn.linear_model import LogisticRegression
 
 
-class DecisionTreeRegressorStrategy(strategy.BacktestingStrategy):
+class Backtester(strategy.BacktestingStrategy):
     def __init__(self, feed, instrument, capital, selected_features, predict_n_days, model_form):
-        super(DecisionTreeRegressorStrategy, self).__init__(feed, capital)
+        super(Backtester, self).__init__(feed, capital)
         self.capital = capital
         self.instrument = instrument
         self.mpf_asset = [
@@ -187,7 +187,7 @@ class DecisionTreeRegressorStrategy(strategy.BacktestingStrategy):
             self.historical_df = pd.DataFrame(self.historical_data)
             # drop NaNs
             self.historical_df = self.historical_df.dropna()
-            X, y = self.data_preprocess(self.historical_df)
+            X, y = self.data_preprocess(self.historical_df, self.predict_n_days)
             self.model = self.training_model(X, y)
         if self.model is not None:
             data_dict = self.bars_to_data_dict(bars, indicators)
@@ -235,7 +235,7 @@ def main(selected_features, predict_n_days, model_form):
     # ]
     # selected_features += indicators
     # predict_n_days = 30
-    tree_reg_strategy = DecisionTreeRegressorStrategy(
+    tree_reg_strategy = Backtester(
         feed=feed,
         instrument=instruments.keys(),
         capital=1000000.0,

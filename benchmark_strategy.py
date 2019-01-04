@@ -77,7 +77,8 @@ def main():
     print "Sharpe ratio: %.2f" % (sharpeRatioAnalyzer.getSharpeRatio(0.05))
     print "Max. drawdown: %.2f %%" % (drawDownAnalyzer.getMaxDrawDown() * 100)
     print "Longest drawdown duration: %s" % (drawDownAnalyzer.getLongestDrawDownDuration())
-    print "Calmar ratio: %.4f" % (retAnalyzer.getCumulativeReturns()[-1] / drawDownAnalyzer.getMaxDrawDown())
+    calmar = retAnalyzer.getCumulativeReturns()[-1] / drawDownAnalyzer.getMaxDrawDown()
+    print "Calmar ratio: %.4f" % (calmar)
 
     print
     print "Total trades: %d" % (tradesAnalyzer.getCount())
@@ -120,8 +121,9 @@ def main():
         print "Returns std. dev.: %2.f %%" % (returns.std() * 100)
         print "Max. return: %2.f %%" % (returns.max() * 100)
         print "Min. return: %2.f %%" % (returns.min() * 100)
+    return calmar
 
 
 if __name__ == '__main__':
-    main()
+    calmar = main()
 
