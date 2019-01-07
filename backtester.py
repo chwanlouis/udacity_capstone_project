@@ -1,8 +1,8 @@
 import os
-import talib
+# import talib
 import pandas as pd
-import numpy as np
-from datetime import datetime
+# import numpy as np
+from datetime import datetime, timedelta
 from pyalgotrade.barfeed.csvfeed import GenericBarFeed
 from pyalgotrade.technical import rsi, ma, macd
 from pyalgotrade import strategy
@@ -12,11 +12,12 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.neural_network import MLPClassifier
-from sklearn.linear_model import LogisticRegression
+# from sklearn.linear_model import LogisticRegression
 
 
 class Backtester(strategy.BacktestingStrategy):
-    def __init__(self, feed, instrument, capital, selected_features, predict_n_days, model_form):
+    def __init__(self, feed, instrument, capital, selected_features, predict_n_days, model_form,
+                 testing_datetime, testing_end_datetime):
         super(Backtester, self).__init__(feed, capital)
         self.capital = capital
         self.instrument = instrument
@@ -44,8 +45,10 @@ class Backtester(strategy.BacktestingStrategy):
         self.conservative_fund_rsi = rsi.RSI(feed['conservative_fund'].getCloseDataSeries(), 14)
         self.hkdollar_bond_fund_rsi = rsi.RSI(feed['hkdollar_bond_fund'].getCloseDataSeries(), 14)
         self.stable_fund_rsi = rsi.RSI(feed['stable_fund'].getCloseDataSeries(), 14)
-        self.testing_datetime = datetime(2014, 8, 2)
-        self.testing_end_datetime = datetime(2018, 1, 15)
+        # self.testing_datetime = datetime(2014, 8, 2)
+        # self.testing_end_datetime = datetime(2018, 1, 15)
+        self.testing_datetime = testing_datetime
+        self.testing_end_datetime = testing_end_datetime
         self.pending_order = None
         self.historical_data = list()
         self.historical_df = None
@@ -208,7 +211,7 @@ class Backtester(strategy.BacktestingStrategy):
             self.previous_percentages = self.current_percentages
 
 
-def main(selected_features, predict_n_days, model_form):
+def main(selected_features, predict_n_days, model_form, testing_datetime, testing_end_datetime):
     feed = GenericBarFeed(frequency='DAY')
     instruments = {
         'hk_equity_fund': 'dataset/hk_equity_fund_data.csv',
@@ -241,7 +244,9 @@ def main(selected_features, predict_n_days, model_form):
         capital=1000000.0,
         selected_features=selected_features,
         predict_n_days=predict_n_days,
-        model_form=model_form
+        model_form=model_form,
+        testing_datetime=testing_datetime,
+        testing_end_datetime=testing_end_datetime
     )
     retAnalyzer = rets.Returns()
     tree_reg_strategy.attachAnalyzer(retAnalyzer)
@@ -257,13 +262,20 @@ def main(selected_features, predict_n_days, model_form):
     print('** Backtesting Report **')
     print('************************')
 
-    print "Final portfolio value: $%.2f" % tree_reg_strategy.getResult()
-    print "Cumulative returns: %.2f %%" % (retAnalyzer.getCumulativeReturns()[-1] * 100)
-    print "Sharpe ratio: %.2f" % (sharpeRatioAnalyzer.getSharpeRatio(0.03))
-    print "Max. drawdown: %.2f %%" % (drawDownAnalyzer.getMaxDrawDown() * 100)
+    portfo_val = tree_reg_strategy.getResult()
+    print "Final portfolio value: $%.2f" % portfo_val
+    cumulative_returns = retAnalyzer.getCumulativeReturns()[-1]
+    print "Cumulative returns: %.2f %%" % (cumulative_returns * 100)
+    sharpe_ratio = sharpeRatioAnalyzer.getSharpeRatio(0.03)
+    print "Sharpe ratio: %.2f" % (sharpe_ratio)
+    mdd = drawDownAnalyzer.getMaxDrawDown()
+    print "Max. drawdown: %.2f %%" % (mdd * 100)
     print "Longest drawdown duration: %s" % (drawDownAnalyzer.getLongestDrawDownDuration())
-    calmar_ratio = retAnalyzer.getCumulativeReturns()[-1] / drawDownAnalyzer.getMaxDrawDown()
-    print "Calmar ratio: %.4f" % (calmar_ratio)
+    if mdd > 0:
+        calmar_ratio = retAnalyzer.getCumulativeReturns()[-1] / mdd
+        print "Calmar ratio: %.4f" % (calmar_ratio)
+    else:
+        calmar_ratio = None
 
     print
     print "Total trades: %d" % (tradesAnalyzer.getCount())
@@ -306,7 +318,20 @@ def main(selected_features, predict_n_days, model_form):
         print "Returns std. dev.: %2.f %%" % (returns.std() * 100)
         print "Max. return: %2.f %%" % (returns.max() * 100)
         print "Min. return: %2.f %%" % (returns.min() * 100)
-    return calmar_ratio
+    return portfo_val, cumulative_returns, sharpe_ratio, mdd, calmar_ratio
+
+
+def generate_time_slots(time_start, time_end, sections):
+    days = ((time_end - time_start) / sections).days
+    time_length = timedelta(days=days)
+    time_slots = list()
+    b_start = time_start
+    for i in range(sections):
+        b_end = b_start + time_length
+        time_slots.append([b_start, b_end])
+        b_start = b_end
+    time_slots.append([time_start, time_end])
+    return time_slots
 
 
 def logger(string, file_name):
@@ -318,14 +343,18 @@ def logger(string, file_name):
         string += '\n'
     with open(file_name, mode) as file:
         file.write(string)
+    print(string)
 
 
 if __name__ == '__main__':
     if not os.path.isdir('log'):
         os.mkdir('log')
     selected_features_list = [
+        ['HSI_close', 'IXIC_close'],
+        ['us2yrby_close', 'us10yrby_close'],
+        ['HSI_close', 'IXIC_close', 'us2yrby_close', 'us10yrby_close'],
         ['hk_equity_fund_rsi', 'growth_fund_rsi', 'balanced_fund_rsi', 'conservative_fund_rsi',
-        'hkdollar_bond_fund_rsi', 'stable_fund_rsi'],
+         'hkdollar_bond_fund_rsi', 'stable_fund_rsi'],
         ['hk_equity_fund_macd_histogram', 'growth_fund_macd_histogram',
          'balanced_fund_macd_histogram', 'conservative_fund_macd_histogram', 'hkdollar_bond_fund_macd_histogram',
          'stable_fund_macd_histogram'],
@@ -339,19 +368,35 @@ if __name__ == '__main__':
         'decision_tree': Pipeline([('normalizer', StandardScaler()), ('clf', DecisionTreeRegressor(random_state=1))]),
         'mlp_classifier': Pipeline([('normalizer', StandardScaler()), ('clf', MLPClassifier(random_state=1))])
     }
+    testing_start = datetime(2014, 8, 2)
+    testing_end = datetime(2018, 1, 15)
+    sections = 5
+    time_slots = generate_time_slots(testing_start, testing_end, sections)
     results = list()
     log_file_name = 'log/backtesting_result.txt'
     for selected_features in selected_features_list:
         for predict_n_days in predict_n_days_list:
             for model_string, model_form in model_forms.items():
-                calmar = main(selected_features, predict_n_days, model_form)
-                results.append([selected_features, predict_n_days, calmar])
-                model_form_string = 'model_form:%s' % model_string
-                selected_features_string = 'selected_features:%s' % ','.join(selected_features)
-                predict_n_days_string = 'predict_n_days:%s' % predict_n_days
-                calmar_string = 'calmar_ratio:%s' % calmar
-                logger(model_form_string, log_file_name)
-                logger(selected_features_string, log_file_name)
-                logger(predict_n_days_string, log_file_name)
-                logger(calmar_string, log_file_name)
-                logger('\n', log_file_name)
+                for t_s, t_e in time_slots:
+                    portfo_val, cumulative_returns, sharpe_ratio, mdd, calmar_ratio = \
+                        main(selected_features, predict_n_days, model_form, t_s, t_e)
+                    results.append([selected_features, predict_n_days, calmar_ratio])
+                    model_form_string = 'model_form:%s' % model_string
+                    time_range_string = 'time_range:%s-%s' % (t_s.strftime('%Y_%m_%d'), t_e.strftime('%Y_%m_%d'))
+                    selected_features_string = 'selected_features:%s' % ','.join(selected_features)
+                    predict_n_days_string = 'predict_n_days:%s' % predict_n_days
+                    portfo_val_string = 'portfo_val:%s' % portfo_val
+                    cumulative_returns_string = 'cumulative_returns:%s' % cumulative_returns
+                    sharpe_ratio_string = 'sharpe_ratio:%s' % sharpe_ratio
+                    mdd_string = 'mdd:%s' % mdd
+                    calmar_string = 'calmar_ratio:%s' % calmar_ratio
+                    logger(model_form_string, log_file_name)
+                    logger(time_range_string, log_file_name)
+                    logger(selected_features_string, log_file_name)
+                    logger(predict_n_days_string, log_file_name)
+                    logger(calmar_string, log_file_name)
+                    logger(portfo_val_string, log_file_name)
+                    logger(cumulative_returns_string, log_file_name)
+                    logger(sharpe_ratio_string, log_file_name)
+                    logger(mdd_string, log_file_name)
+                    logger('\n', log_file_name)

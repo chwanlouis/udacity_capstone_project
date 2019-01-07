@@ -1,3 +1,4 @@
+import os
 from datetime import datetime
 from pyalgotrade.barfeed.csvfeed import GenericBarFeed
 from pyalgotrade import strategy
@@ -56,6 +57,16 @@ def main():
     for instu, fname in instruments.iteritems():
         print('Importing data %s from file path %s' % (instu, fname))
         feed.addBarsFromCSV(instu, fname)
+    # selected_features = [
+    #     'hk_equity_fund', 'growth_fund', 'balanced_fund', 'conservative_fund', 'hkdollar_bond_fund', 'stable_fund'
+    # ]
+    # selected_features = list()
+    # indicators = [
+    #     'hk_equity_fund_rsi', 'growth_fund_rsi', 'balanced_fund_rsi', 'conservative_fund_rsi',
+    #     'hkdollar_bond_fund_rsi', 'stable_fund_rsi'
+    # ]
+    # selected_features += indicators
+    # predict_n_days = 30
     tree_reg_strategy = BenchmarkStrategy(
         feed=feed,
         instrument=instruments.keys(),
@@ -72,13 +83,24 @@ def main():
     tree_reg_strategy.attachAnalyzer(tradesAnalyzer)
     tree_reg_strategy.run()
 
-    print "Final portfolio value: $%.2f" % tree_reg_strategy.getResult()
-    print "Cumulative returns: %.2f %%" % (retAnalyzer.getCumulativeReturns()[-1] * 100)
-    print "Sharpe ratio: %.2f" % (sharpeRatioAnalyzer.getSharpeRatio(0.05))
-    print "Max. drawdown: %.2f %%" % (drawDownAnalyzer.getMaxDrawDown() * 100)
+    print('************************')
+    print('** Backtesting Report **')
+    print('************************')
+
+    portfo_val = tree_reg_strategy.getResult()
+    print "Final portfolio value: $%.2f" % portfo_val
+    cumulative_returns = retAnalyzer.getCumulativeReturns()[-1]
+    print "Cumulative returns: %.2f %%" % (cumulative_returns * 100)
+    sharpe_ratio = sharpeRatioAnalyzer.getSharpeRatio(0.03)
+    print "Sharpe ratio: %.2f" % (sharpe_ratio)
+    mdd = drawDownAnalyzer.getMaxDrawDown()
+    print "Max. drawdown: %.2f %%" % (mdd * 100)
     print "Longest drawdown duration: %s" % (drawDownAnalyzer.getLongestDrawDownDuration())
-    calmar = retAnalyzer.getCumulativeReturns()[-1] / drawDownAnalyzer.getMaxDrawDown()
-    print "Calmar ratio: %.4f" % (calmar)
+    if mdd > 0:
+        calmar_ratio = retAnalyzer.getCumulativeReturns()[-1] / mdd
+        print "Calmar ratio: %.4f" % (calmar_ratio)
+    else:
+        calmar_ratio = None
 
     print
     print "Total trades: %d" % (tradesAnalyzer.getCount())
@@ -121,9 +143,41 @@ def main():
         print "Returns std. dev.: %2.f %%" % (returns.std() * 100)
         print "Max. return: %2.f %%" % (returns.max() * 100)
         print "Min. return: %2.f %%" % (returns.min() * 100)
-    return calmar
+    return portfo_val, cumulative_returns, sharpe_ratio, mdd, calmar_ratio
+
+
+def logger(string, file_name):
+    if not os.path.isfile(file_name):
+        mode = 'w'
+    else:
+        mode = 'a'
+    if '\n' not in string:
+        string += '\n'
+    with open(file_name, mode) as file:
+        file.write(string)
 
 
 if __name__ == '__main__':
-    calmar = main()
+    log_file_name = 'log/backtesting_result.txt'
+    portfo_val, cumulative_returns, sharpe_ratio, mdd, calmar_ratio = main()
+    model_form = 'benchmark'
+    selected_features = []
+    predict_n_days = 'NA'
+    model_form_string = 'model_form:%s' % model_form
+    selected_features_string = 'selected_features:%s' % ','.join(selected_features)
+    predict_n_days_string = 'predict_n_days:%s' % predict_n_days
+    portfo_val_string = 'portfo_val:%s' % portfo_val
+    cumulative_returns_string = 'cumulative_returns:%s' % cumulative_returns
+    sharpe_ratio_string = 'sharpe_ratio:%s' % sharpe_ratio
+    mdd_string = 'mdd:%s' % mdd
+    calmar_string = 'calmar_ratio:%s' % calmar_ratio
+    logger(model_form_string, log_file_name)
+    logger(selected_features_string, log_file_name)
+    logger(predict_n_days_string, log_file_name)
+    logger(calmar_string, log_file_name)
+    logger(portfo_val_string, log_file_name)
+    logger(cumulative_returns_string, log_file_name)
+    logger(sharpe_ratio_string, log_file_name)
+    logger(mdd_string, log_file_name)
+    logger('\n', log_file_name)
 
