@@ -2,10 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="21c9de50-a663-4a37-bed6-3afaa1f3af40" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/report_analysis.py" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/log/backtesting_result.txt" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/md_figure/fig_1.png" afterPath="$PROJECT_DIR$/md_figure/fig_1.png" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/proposal.pdf" afterPath="$PROJECT_DIR$/proposal.pdf" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/report.docx" afterPath="$PROJECT_DIR$/report.docx" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/udacity_capstone_project.iml" afterPath="$PROJECT_DIR$/.idea/udacity_capstone_project.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
@@ -23,10 +22,14 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/evaluation_metric.py" afterPath="$PROJECT_DIR$/evaluation_metric.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/get_proposal_pdf.py" afterPath="$PROJECT_DIR$/get_proposal_pdf.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/github-markdown.css" afterPath="$PROJECT_DIR$/github-markdown.css" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/log/backtesting_result.txt" afterPath="$PROJECT_DIR$/log/backtesting_result.txt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/log/walk_forward_backtesting_result.txt" afterPath="$PROJECT_DIR$/log/walk_forward_backtesting_result.txt" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/plotting.py" afterPath="$PROJECT_DIR$/plotting.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/proposal.html" afterPath="$PROJECT_DIR$/proposal.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/proposal.md" afterPath="$PROJECT_DIR$/proposal.md" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/report.ipynb" afterPath="$PROJECT_DIR$/report.ipynb" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/report_analysis.py" afterPath="$PROJECT_DIR$/report_analysis.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/walk_forward_backtester.py" afterPath="$PROJECT_DIR$/walk_forward_backtester.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -40,8 +43,8 @@
       <file leaf-file-name="backtester.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/backtester.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="519">
-              <caret line="380" column="50" lean-forward="false" selection-start-line="380" selection-start-column="50" selection-end-line="380" selection-end-column="50" />
+            <state relative-caret-position="504">
+              <caret line="363" column="38" lean-forward="true" selection-start-line="363" selection-start-column="38" selection-end-line="363" selection-end-column="38" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
               </folding>
@@ -49,11 +52,33 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="backtesting_result.txt" pinned="false" current-in-tab="true">
+      <file leaf-file-name="walk_forward_backtester.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/walk_forward_backtester.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="159">
+              <caret line="383" column="16" lean-forward="false" selection-start-line="383" selection-start-column="16" selection-end-line="383" selection-end-column="16" />
+              <folding>
+                <element signature="e#0#9#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="backtesting_result.txt" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/log/backtesting_result.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="384">
-              <caret line="16" column="30" lean-forward="true" selection-start-line="16" selection-start-column="30" selection-end-line="16" selection-end-column="30" />
+            <state relative-caret-position="583">
+              <caret line="5010" column="20" lean-forward="false" selection-start-line="5010" selection-start-column="20" selection-end-line="5010" selection-end-column="20" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="walk_forward_backtesting_result.txt" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/log/walk_forward_backtesting_result.txt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="621">
+              <caret line="757" column="18" lean-forward="true" selection-start-line="757" selection-start-column="18" selection-end-line="757" selection-end-column="18" />
               <folding />
             </state>
           </provider>
@@ -62,8 +87,8 @@
       <file leaf-file-name="benchmark_strategy.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/benchmark_strategy.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="317">
-              <caret line="164" column="25" lean-forward="false" selection-start-line="164" selection-start-column="25" selection-end-line="164" selection-end-column="25" />
+            <state relative-caret-position="237">
+              <caret line="160" column="62" lean-forward="false" selection-start-line="160" selection-start-column="62" selection-end-line="160" selection-end-column="62" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
               </folding>
@@ -74,8 +99,8 @@
       <file leaf-file-name="report_analysis.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/report_analysis.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="408">
-              <caret line="17" column="39" lean-forward="true" selection-start-line="17" selection-start-column="39" selection-end-line="17" selection-end-column="39" />
+            <state relative-caret-position="576">
+              <caret line="24" column="62" lean-forward="false" selection-start-line="24" selection-start-column="62" selection-end-line="24" selection-end-column="62" />
               <folding />
             </state>
           </provider>
@@ -108,6 +133,12 @@
       <find>calmar_ratio:6</find>
       <find>self.predict_n_days</find>
       <find>calmar_ratio:8</find>
+      <find>calmar_ratio:2</find>
+      <find>returns:0.4</find>
+      <find>ma</find>
+      <find>predict_n_days:5</find>
+      <find>2018</find>
+      <find>calmar_ratio:11</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -137,18 +168,19 @@
         <option value="$PROJECT_DIR$/mlp_classifier_strategy.py" />
         <option value="$PROJECT_DIR$/logit_reg_strategy.py" />
         <option value="$PROJECT_DIR$/d_tree_strategy_with_indicator.py" />
-        <option value="$PROJECT_DIR$/benchmark_strategy.py" />
         <option value="$PROJECT_DIR$/backtester.py" />
-        <option value="$PROJECT_DIR$/report_analysis.py" />
         <option value="$PROJECT_DIR$/log/backtesting_result.txt" />
+        <option value="$PROJECT_DIR$/log/walk_forward_backtesting_result.txt" />
+        <option value="$PROJECT_DIR$/report_analysis.py" />
+        <option value="$PROJECT_DIR$/benchmark_strategy.py" />
+        <option value="$PROJECT_DIR$/walk_forward_backtester.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-8" />
-    <option name="y" value="-8" />
-    <option name="width" value="1936" />
-    <option name="height" value="1056" />
+    <option name="x" value="-1920" />
+    <option name="width" value="1085" />
+    <option name="height" value="1080" />
   </component>
   <component name="ProjectView">
     <navigator currentView="ProjectPane" proportions="" version="1">
@@ -165,7 +197,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -182,7 +214,7 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scratches" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -322,7 +354,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <frame x="-1928" y="-8" width="1936" height="1096" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.16041666" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -373,15 +405,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/README.md">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/Anaconda3/Lib/site-packages/markdown/util.py" />
-    <entry file="file://$USER_HOME$/Anaconda3/Lib/site-packages/markdown/__init__.py" />
     <entry file="file://$USER_HOME$/Anaconda3/Lib/site-packages/markdown/preprocessors.py" />
     <entry file="file://$PROJECT_DIR$/github-markdown.css">
       <provider selected="true" editor-type-id="text-editor">
@@ -653,32 +676,21 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="true" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/benchmark_strategy.py">
+    <entry file="file://C:/ProgramData/Anaconda2/Lib/site-packages/pyalgotrade/technical/ma.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="317">
-          <caret line="164" column="25" lean-forward="false" selection-start-line="164" selection-start-column="25" selection-end-line="164" selection-end-column="25" />
-          <folding>
-            <element signature="e#0#9#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/report_analysis.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="408">
-          <caret line="17" column="39" lean-forward="true" selection-start-line="17" selection-start-column="39" selection-end-line="17" selection-end-column="39" />
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/backtester.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="519">
-          <caret line="380" column="50" lean-forward="false" selection-start-line="380" selection-start-column="50" selection-end-line="380" selection-end-column="50" />
+        <state relative-caret-position="504">
+          <caret line="363" column="38" lean-forward="true" selection-start-line="363" selection-start-column="38" selection-end-line="363" selection-end-column="38" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
           </folding>
@@ -687,9 +699,45 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/log/backtesting_result.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="384">
-          <caret line="16" column="30" lean-forward="true" selection-start-line="16" selection-start-column="30" selection-end-line="16" selection-end-column="30" />
+        <state relative-caret-position="583">
+          <caret line="5010" column="20" lean-forward="false" selection-start-line="5010" selection-start-column="20" selection-end-line="5010" selection-end-column="20" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/log/walk_forward_backtesting_result.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="621">
+          <caret line="757" column="18" lean-forward="true" selection-start-line="757" selection-start-column="18" selection-end-line="757" selection-end-column="18" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/report_analysis.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="576">
+          <caret line="24" column="62" lean-forward="false" selection-start-line="24" selection-start-column="62" selection-end-line="24" selection-end-column="62" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/benchmark_strategy.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="237">
+          <caret line="160" column="62" lean-forward="false" selection-start-line="160" selection-start-column="62" selection-end-line="160" selection-end-column="62" />
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/walk_forward_backtester.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="159">
+          <caret line="383" column="16" lean-forward="false" selection-start-line="383" selection-start-column="16" selection-end-line="383" selection-end-column="16" />
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

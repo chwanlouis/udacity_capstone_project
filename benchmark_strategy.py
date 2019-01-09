@@ -158,7 +158,7 @@ def logger(string, file_name):
 
 
 if __name__ == '__main__':
-    log_file_name = 'log/backtesting_result.txt'
+    log_file_name = 'log/walk_forward_backtesting_result_sec_3.txt'
     portfo_val, cumulative_returns, sharpe_ratio, mdd, calmar_ratio = main()
     model_form = 'benchmark'
     selected_features = []

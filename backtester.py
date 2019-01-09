@@ -4,7 +4,7 @@ import pandas as pd
 # import numpy as np
 from datetime import datetime, timedelta
 from pyalgotrade.barfeed.csvfeed import GenericBarFeed
-from pyalgotrade.technical import rsi, ma, macd
+from pyalgotrade.technical import rsi, macd
 from pyalgotrade import strategy
 from pyalgotrade.stratanalyzer import returns as rets
 from pyalgotrade.stratanalyzer import sharpe, drawdown, trades

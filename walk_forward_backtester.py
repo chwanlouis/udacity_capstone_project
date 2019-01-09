@@ -381,30 +381,31 @@ if __name__ == '__main__':
     }
     testing_start = datetime(2014, 8, 2)
     testing_end = datetime(2018, 1, 15)
-    sections = 5
+    sections = [2, 3, 4, 5, 6, 7, 8, 9, 10]
     # time_slots = generate_time_slots(testing_start, testing_end, sections)
     results = list()
-    log_file_name = 'log/walk_forward_backtesting_result.txt'
-    for selected_features in selected_features_list:
-        for predict_n_days in predict_n_days_list:
-            for model_string, model_form in model_forms.items():
-                portfo_val, cumulative_returns, sharpe_ratio, mdd, calmar_ratio = \
-                    main(selected_features, predict_n_days, model_form, testing_start, testing_end, sections)
-                results.append([selected_features, predict_n_days, calmar_ratio])
-                model_form_string = 'model_form:%s' % model_string
-                selected_features_string = 'selected_features:%s' % ','.join(selected_features)
-                predict_n_days_string = 'predict_n_days:%s' % predict_n_days
-                portfo_val_string = 'portfo_val:%s' % portfo_val
-                cumulative_returns_string = 'cumulative_returns:%s' % cumulative_returns
-                sharpe_ratio_string = 'sharpe_ratio:%s' % sharpe_ratio
-                mdd_string = 'mdd:%s' % mdd
-                calmar_string = 'calmar_ratio:%s' % calmar_ratio
-                logger(model_form_string, log_file_name)
-                logger(selected_features_string, log_file_name)
-                logger(predict_n_days_string, log_file_name)
-                logger(calmar_string, log_file_name)
-                logger(portfo_val_string, log_file_name)
-                logger(cumulative_returns_string, log_file_name)
-                logger(sharpe_ratio_string, log_file_name)
-                logger(mdd_string, log_file_name)
-                logger('\n', log_file_name)
+    for sec in sections:
+        log_file_name = 'log/walk_forward_backtesting_result_sec_%s.txt' % sec
+        for selected_features in selected_features_list:
+            for predict_n_days in predict_n_days_list:
+                for model_string, model_form in model_forms.items():
+                    portfo_val, cumulative_returns, sharpe_ratio, mdd, calmar_ratio = \
+                        main(selected_features, predict_n_days, model_form, testing_start, testing_end, sec)
+                    results.append([selected_features, predict_n_days, calmar_ratio])
+                    model_form_string = 'model_form:%s' % model_string
+                    selected_features_string = 'selected_features:%s' % ','.join(selected_features)
+                    predict_n_days_string = 'predict_n_days:%s' % predict_n_days
+                    portfo_val_string = 'portfo_val:%s' % portfo_val
+                    cumulative_returns_string = 'cumulative_returns:%s' % cumulative_returns
+                    sharpe_ratio_string = 'sharpe_ratio:%s' % sharpe_ratio
+                    mdd_string = 'mdd:%s' % mdd
+                    calmar_string = 'calmar_ratio:%s' % calmar_ratio
+                    logger(model_form_string, log_file_name)
+                    logger(selected_features_string, log_file_name)
+                    logger(predict_n_days_string, log_file_name)
+                    logger(calmar_string, log_file_name)
+                    logger(portfo_val_string, log_file_name)
+                    logger(cumulative_returns_string, log_file_name)
+                    logger(sharpe_ratio_string, log_file_name)
+                    logger(mdd_string, log_file_name)
+                    logger('\n', log_file_name)

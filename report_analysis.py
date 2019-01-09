@@ -21,11 +21,11 @@ def file_reader(log_file_name):
     return records
 
 
-
-
-
 if __name__ == '__main__':
-    log_file_name = 'log/backtesting_result.txt'
+    log_file_name = 'log/walk_forward_backtesting_result_sec_3.txt'
     data_dict = file_reader(log_file_name)
     df = pd.DataFrame(data_dict)
-    print(df.sort_values('calmar_ratio', ascending=False))
+    selected_df = df.sort_values('cumulative_returns', ascending=False)[0:10]
+    # selected_df.to_csv('walk_forward_backtest_summary.csv', index=False)
+    print(selected_df)
+    # print(df[df['model_form'] == 'benchmark'])
