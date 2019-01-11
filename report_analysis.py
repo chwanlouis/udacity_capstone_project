@@ -22,7 +22,7 @@ def file_reader(log_file_name):
 
 
 if __name__ == '__main__':
-    log_file_name = 'log/walk_forward_backtesting_result_sec_3.txt'
+    log_file_name = 'log/walk_forward_backtesting_result_sec_10.txt'
     data_dict = file_reader(log_file_name)
     df = pd.DataFrame(data_dict)
     selected_df = df.sort_values('cumulative_returns', ascending=False)[0:10]
