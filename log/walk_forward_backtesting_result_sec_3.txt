@@ -1510,3 +1510,12 @@ cumulative_returns:0.1285520778
 sharpe_ratio:-1.282842643547689
 mdd:0.0953626537351
 
+model_form:benchmark
+selected_features:
+predict_n_days:NA
+calmar_ratio:1.54180853205
+portfo_val:1430681.6033
+cumulative_returns:0.4306816033
+sharpe_ratio:-0.19043825409128218
+mdd:0.279335335321
+

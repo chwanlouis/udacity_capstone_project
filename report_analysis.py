@@ -22,10 +22,24 @@ def file_reader(log_file_name):
 
 
 if __name__ == '__main__':
-    log_file_name = 'log/walk_forward_backtesting_result_sec_10.txt'
-    data_dict = file_reader(log_file_name)
-    df = pd.DataFrame(data_dict)
-    selected_df = df.sort_values('cumulative_returns', ascending=False)[0:10]
-    # selected_df.to_csv('walk_forward_backtest_summary.csv', index=False)
-    print(selected_df)
+    records = list()
+    benchmark_c_returns = None
+    for num in range(2, 25):
+        log_file_name = 'log/walk_forward_backtesting_result_sec_%s.txt' % num
+        print('Reading file: %s' % log_file_name)
+        data_dict = file_reader(log_file_name)
+        df = pd.DataFrame(data_dict)
+        if benchmark_c_returns is None:
+            benchmark_c_returns = df[df['model_form'] == 'benchmark']['cumulative_returns'].values.tolist()[0]
+        selected_df = df[df['cumulative_returns'] > benchmark_c_returns]
+        n_records = len(selected_df)
+        if n_records > 0:
+            print('%s found' % n_records)
+            selected_records = selected_df.to_dict('records')
+            for record in selected_records:
+                record['walk_forward_steps'] = num
+                records.append(record)
+    output_df = pd.DataFrame(records)
+    output_df.to_csv('walk_forward_report.csv', index=False)
+
     # print(df[df['model_form'] == 'benchmark'])

@@ -1,0 +1,9 @@
+calmar_ratio,cumulative_returns,mdd,model_form,portfo_val,predict_n_days,selected_features,sharpe_ratio,walk_forward_steps
+5.45875060641,0.4459214565,0.0816892891162,decision_tree,1445921.4565,10,"HSI_close,IXIC_close",-0.36101006757205595,3
+11.619308425,0.4395715464,0.0378311281808,decision_tree,1439571.5464,5,"HSI_close,IXIC_close,us2yrby_close,us10yrby_close",-0.4785149313293919,5
+7.1388083713,0.4702013754,0.0658655269822,mlp_classifier,1470201.3754,10,"us2yrby_close,us10yrby_close",-0.33653918227914403,6
+6.94365640815,0.4519408841,0.0650868731883,mlp_classifier,1451940.8841,10,"us2yrby_close,us10yrby_close",-0.4131177279698024,9
+11.7758435212,0.4380598758,0.0371998723497,decision_tree,1438059.8758,5,"HSI_close,IXIC_close,us2yrby_close,us10yrby_close",-0.527907952050864,10
+8.38450394394,0.4973429966,0.0593169255957,mlp_classifier,1497342.9966,10,"hk_equity_fund_macd_histogram,growth_fund_macd_histogram,balanced_fund_macd_histogram,conservative_fund_macd_histogram,hkdollar_bond_fund_macd_histogram,stable_fund_macd_histogram",-0.418171032356531,10
+7.53478059826,0.4904160443,0.0650869707359,mlp_classifier,1490416.0443,10,"us2yrby_close,us10yrby_close",-0.3538158025004366,18
+7.31141421824,0.4758780846,0.0650870092154,mlp_classifier,1475878.0846,10,"us2yrby_close,us10yrby_close",-0.331519178728654,24

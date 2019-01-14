@@ -158,7 +158,6 @@ def logger(string, file_name):
 
 
 if __name__ == '__main__':
-    log_file_name = 'log/walk_forward_backtesting_result_sec_3.txt'
     portfo_val, cumulative_returns, sharpe_ratio, mdd, calmar_ratio = main()
     model_form = 'benchmark'
     selected_features = []
@@ -171,6 +170,7 @@ if __name__ == '__main__':
     sharpe_ratio_string = 'sharpe_ratio:%s' % sharpe_ratio
     mdd_string = 'mdd:%s' % mdd
     calmar_string = 'calmar_ratio:%s' % calmar_ratio
+    log_file_name = 'log/walk_forward_backtesting_result_sec_2.txt'
     logger(model_form_string, log_file_name)
     logger(selected_features_string, log_file_name)
     logger(predict_n_days_string, log_file_name)
