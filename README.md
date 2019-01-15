@@ -1,6 +1,6 @@
 # Machine Learning based trading agent
 
-One Paragraph of project description goes here
+This readme is going to introduce the dependencies, working environment and instructions for the software
 
 ## Getting Started
 
@@ -10,71 +10,49 @@ These instructions will get you a copy of the project up and running on your loc
 
 What things you need to install the software and how to install them
 
-```
-Give examples
-```
+* python 2.7.14
+* scikit-learn 0.19.1
+* numpy 1.15.2
+* pandas 0.18.1
+* pyalgotrade 0.18
+* bs4 4.6.0
+
 
 ### Installing
 
 A step by step series of examples that tell you have to get a development env running
 
-Say what the step will be
+Please install anaconda 2 via the web and execute the following command
 
 ```
-Give the example
+pip install scikit-learn==0.19.1
+pip install numpy==1.15.2
+pip install pandas==0.18.1
+pip install pyalgotrade==0.18
+pip install beautifulsoup4==4.6.0
 ```
-
-And repeat
-
-```
-until finished
-```
-
-End with an example of getting some data out of the system or using it for a little demo
 
 ## Running the tests
 
-Explain how to run the automated tests for this system
+### Getting the benchmark result
+'''
+python benchmark_result.py
+'''
+### Getting the backtest result
+'''
+python backtester.py
+'''
+All the record is saved in log/backtesting_result.txt
 
-### Break down into end to end tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-### And coding style tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-## Deployment
-
-Add additional notes about how to deploy this on a live system
-
-## Built With
-
-* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
-* [Maven](https://maven.apache.org/) - Dependency Management
-* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
-
-## Contributing
-
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
-
-## Versioning
-
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags).
+### Getting the walk forward test result
+'''
+python walk_forward_backtester.py
+'''
+All the record is saved in log/walk_forward_backtesting_result_sec_*.txt. "*" is the number of section divided
 
 ## Authors
 
-* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
-
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
+* **Louis Wan** - *Initial work* - [chwanlouis](https://github.com/chwanlouis)
 
 ## License
 
@@ -82,6 +60,4 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 ## Acknowledgments
 
-* Hat tip to anyone who's code was used
-* Inspiration
-* etc
+* the backtest report is copied from pyalgotrade example
