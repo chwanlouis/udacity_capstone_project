@@ -35,19 +35,19 @@ pip install beautifulsoup4==4.6.0
 ## Running the tests
 
 ### Getting the benchmark result
-'''
+```
 python benchmark_result.py
-'''
+```
 ### Getting the backtest result
-'''
+```
 python backtester.py
-'''
+```
 All the record is saved in log/backtesting_result.txt
 
 ### Getting the walk forward test result
-'''
+```
 python walk_forward_backtester.py
-'''
+```
 All the record is saved in log/walk_forward_backtesting_result_sec_*.txt. "*" is the number of section divided
 
 ## Authors
