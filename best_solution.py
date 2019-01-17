@@ -290,8 +290,12 @@ if __name__ == '__main__':
         'dd_curve': dd_curve
     })
     plt1 = df[['equity_curve']].plot(figsize=(12, 8))
+    plt1.set_xlabel('time index')
+    plt1.set_ylabel('portfolio value')
     fig1 = plt1.get_figure()
     fig1.savefig('best_sol_equity.png')
     plt2 = df[['dd_curve']].plot(figsize=(12, 8), style='r-')
+    plt2.set_xlabel('time index')
+    plt2.set_ylabel('drawdown percentage')
     fig2 = plt2.get_figure()
     fig2.savefig('best_sol_dd.png')
