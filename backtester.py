@@ -27,6 +27,7 @@ class Backtester(strategy.BacktestingStrategy):
         self.positions = {asset: None for asset in self.mpf_asset}
         self.current_percentages = None
         self.previous_percentages = None
+        # technical indicators is denfined here
         self.hk_equity_fund_macd = macd.MACD(feed['hk_equity_fund'].getCloseDataSeries(), 12, 26, 9)
         self.hk_equity_fund_macd_histogram = self.hk_equity_fund_macd.getHistogram()
         self.growth_fund_macd = macd.MACD(feed['growth_fund'].getCloseDataSeries(), 12, 26, 9)
@@ -58,20 +59,41 @@ class Backtester(strategy.BacktestingStrategy):
         self.model = None
 
     def onEnterOk(self, position):
+        '''
+        This function will be triggerd if the position is filled
+        :param position:
+        :return:
+        '''
         execInfo = position.getEntryOrder().getExecutionInfo()
         self.info("BUY %s QTY %s at $%.2f" % (position.getInstrument(), execInfo.getQuantity(), execInfo.getPrice()))
 
     def onEnterCanceled(self, position):
+        '''
+        This function will be triggerd if a open order is cancelled
+        :param position:
+        :return:
+        '''
         instrument = position.getInstrument()
         self.positions[instrument] = None
 
     def onExitOk(self, position):
+        '''
+        This function will be triggered if a position is closed
+        :param position:
+        :return:
+        '''
         execInfo = position.getExitOrder().getExecutionInfo()
         instrument = position.getInstrument()
         self.info("SELL at $%.2f" % (execInfo.getPrice()))
         self.positions[instrument] = None
 
     def bars_to_data_dict(self, bars, indicators):
+        '''
+        This functions transform bar object and indicators to a dict object
+        :param bars: pyalgotrade.bar.Bar object
+        :param indicators: dict object
+        :return: dict object
+        '''
         data_dict = dict()
         for instrument in self.instrument:
             if instrument in bars.keys():
@@ -93,10 +115,22 @@ class Backtester(strategy.BacktestingStrategy):
         return data_dict
 
     def onHistoricalData(self, bars, indicators):
+        '''
+        data transformation and storage
+        :param bars:
+        :param indicators:
+        :return:
+        '''
         data_dict = self.bars_to_data_dict(bars, indicators)
         self.historical_data.append(data_dict)
 
     def data_preprocess(self, historical_df, days=30):
+        '''
+        Generate input data and labels
+        :param historical_df: pandas.DataFrame object
+        :param days: int object
+        :return: numpy.ndarray, numpy.ndarray
+        '''
         y_colnames = list()
         for asset in self.mpf_asset:
             colname = '%s_close_return_t+%s' % (asset, days)
@@ -123,6 +157,10 @@ class Backtester(strategy.BacktestingStrategy):
             return percentages
 
     def get_all_position_shares(self):
+        '''
+        get current asset shares
+        :return: dict object
+        '''
         position_shares = dict()
         for instrument, position in self.positions.iteritems():
             if position is None:
@@ -132,6 +170,10 @@ class Backtester(strategy.BacktestingStrategy):
         return position_shares
 
     def get_total_asset_value(self, bars, shares):
+        '''
+        get current asset total value
+        :return: float object
+        '''
         total_value = 0
         for instrument, n_shares in shares.iteritems():
             if n_shares is not None:
@@ -140,6 +182,10 @@ class Backtester(strategy.BacktestingStrategy):
         return total_value
 
     def all_position_exit(self):
+        '''
+        close all current position
+        :return:
+        '''
         for _, position in self.positions.iteritems():
             if position is not None:
                 position.exitMarket()
@@ -164,9 +210,20 @@ class Backtester(strategy.BacktestingStrategy):
                 self.positions[asset] = self.enterLong(asset, shares, True, False)
 
     def training_model(self, X, y):
+        '''
+        fit the model given defined model form and dataset
+        :param X: numpy.ndarray object
+        :param y: numpy.ndarray object
+        :return: fitted model
+        '''
         return self.model_form.fit(X, y)
 
     def onBars(self, bars):
+        '''
+        This function will be triggered everytime a new bar is come
+        :param bars:
+        :return:
+        '''
         if 'hk_equity_fund' not in bars.keys():
             return
         indicators = {

@@ -1,10 +1,8 @@
 import os
-# import talib
 import pandas as pd
-# import numpy as np
 from datetime import datetime, timedelta
 from pyalgotrade.barfeed.csvfeed import GenericBarFeed
-from pyalgotrade.technical import rsi, ma, macd
+from pyalgotrade.technical import rsi, macd
 from pyalgotrade import strategy
 from pyalgotrade.stratanalyzer import returns as rets
 from pyalgotrade.stratanalyzer import sharpe, drawdown, trades
@@ -12,7 +10,6 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.neural_network import MLPClassifier
-# from sklearn.linear_model import LogisticRegression
 
 
 class WalkForwardBacktester(strategy.BacktestingStrategy):
@@ -27,6 +24,7 @@ class WalkForwardBacktester(strategy.BacktestingStrategy):
         self.positions = {asset: None for asset in self.mpf_asset}
         self.current_percentages = None
         self.previous_percentages = None
+        # technical indicators is denfined here
         self.hk_equity_fund_macd = macd.MACD(feed['hk_equity_fund'].getCloseDataSeries(), 12, 26, 9)
         self.hk_equity_fund_macd_histogram = self.hk_equity_fund_macd.getHistogram()
         self.growth_fund_macd = macd.MACD(feed['growth_fund'].getCloseDataSeries(), 12, 26, 9)
@@ -45,8 +43,6 @@ class WalkForwardBacktester(strategy.BacktestingStrategy):
         self.conservative_fund_rsi = rsi.RSI(feed['conservative_fund'].getCloseDataSeries(), 14)
         self.hkdollar_bond_fund_rsi = rsi.RSI(feed['hkdollar_bond_fund'].getCloseDataSeries(), 14)
         self.stable_fund_rsi = rsi.RSI(feed['stable_fund'].getCloseDataSeries(), 14)
-        # self.testing_datetime = datetime(2014, 8, 2)
-        # self.testing_end_datetime = datetime(2018, 1, 15)
         self.testing_datetime = testing_datetime
         self.testing_end_datetime = testing_end_datetime
         self.n_retrain_times = n_retrain_times
@@ -63,6 +59,13 @@ class WalkForwardBacktester(strategy.BacktestingStrategy):
 
     @staticmethod
     def generate_retrain_time_point(time_start, time_end, sections):
+        '''
+        Generate stopping points for re-training the model
+        :param time_start: datetime.datetime object
+        :param time_end: datetime.datetime object
+        :param sections: int object
+        :return: list object
+        '''
         days = ((time_end - time_start) / sections).days
         time_length = timedelta(days=days)
         time_points = list()
@@ -72,26 +75,51 @@ class WalkForwardBacktester(strategy.BacktestingStrategy):
         return time_points
 
     def get_retrain_time_point(self):
+        '''
+        Getting time point for calling this function
+        :return: datetime.datetime object
+        '''
         if len(self.retrain_time_points) > 0:
             return self.retrain_time_points.pop(0)
         else:
             return
 
     def onEnterOk(self, position):
+        '''
+        This function will be triggerd if the position is filled
+        :param position:
+        :return:
+        '''
         execInfo = position.getEntryOrder().getExecutionInfo()
         self.info("BUY %s QTY %s at $%.2f" % (position.getInstrument(), execInfo.getQuantity(), execInfo.getPrice()))
 
     def onEnterCanceled(self, position):
+        '''
+        This function will be triggerd if a open order is cancelled
+        :param position:
+        :return:
+        '''
         instrument = position.getInstrument()
         self.positions[instrument] = None
 
     def onExitOk(self, position):
+        '''
+        This function will be triggered if a position is closed
+        :param position:
+        :return:
+        '''
         execInfo = position.getExitOrder().getExecutionInfo()
         instrument = position.getInstrument()
         self.info("SELL at $%.2f" % (execInfo.getPrice()))
         self.positions[instrument] = None
 
     def bars_to_data_dict(self, bars, indicators):
+        '''
+        This functions transform bar object and indicators to a dict object
+        :param bars: pyalgotrade.bar.Bar object
+        :param indicators: dict object
+        :return: dict object
+        '''
         data_dict = dict()
         for instrument in self.instrument:
             if instrument in bars.keys():
@@ -113,10 +141,22 @@ class WalkForwardBacktester(strategy.BacktestingStrategy):
         return data_dict
 
     def onHistoricalData(self, bars, indicators):
+        '''
+        data transformation and storage
+        :param bars:
+        :param indicators:
+        :return:
+        '''
         data_dict = self.bars_to_data_dict(bars, indicators)
         self.historical_data.append(data_dict)
 
     def data_preprocess(self, historical_df, days=30):
+        '''
+        Generate input data and labels
+        :param historical_df: pandas.DataFrame object
+        :param days: int object
+        :return: numpy.ndarray, numpy.ndarray
+        '''
         y_colnames = list()
         for asset in self.mpf_asset:
             colname = '%s_close_return_t+%s' % (asset, days)
@@ -143,6 +183,10 @@ class WalkForwardBacktester(strategy.BacktestingStrategy):
             return percentages
 
     def get_all_position_shares(self):
+        '''
+        get current asset shares
+        :return: dict object
+        '''
         position_shares = dict()
         for instrument, position in self.positions.iteritems():
             if position is None:
@@ -152,6 +196,10 @@ class WalkForwardBacktester(strategy.BacktestingStrategy):
         return position_shares
 
     def get_total_asset_value(self, bars, shares):
+        '''
+        get current asset total value
+        :return: float object
+        '''
         total_value = 0
         for instrument, n_shares in shares.iteritems():
             if n_shares is not None:
@@ -160,6 +208,10 @@ class WalkForwardBacktester(strategy.BacktestingStrategy):
         return total_value
 
     def all_position_exit(self):
+        '''
+        close all current position
+        :return:
+        '''
         for _, position in self.positions.iteritems():
             if position is not None:
                 position.exitMarket()
@@ -184,9 +236,20 @@ class WalkForwardBacktester(strategy.BacktestingStrategy):
                 self.positions[asset] = self.enterLong(asset, shares, True, False)
 
     def training_model(self, X, y):
+        '''
+        fit the model given defined model form and dataset
+        :param X: numpy.ndarray object
+        :param y: numpy.ndarray object
+        :return: fitted model
+        '''
         return self.model_form.fit(X, y)
 
     def onBars(self, bars):
+        '''
+        This function will be triggered everytime a new bar is come
+        :param bars:
+        :return:
+        '''
         if 'hk_equity_fund' not in bars.keys():
             return
         indicators = {
